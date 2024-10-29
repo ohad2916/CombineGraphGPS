@@ -98,6 +98,7 @@ class GPSModel(torch.nn.Module):
                 log_attn_weights=cfg.train.mode == 'log-attn-weights',
             ))
         self.layers = torch.nn.Sequential(*layers)
+        self.h_weights = []
 
         GNNHead = register.head_dict[cfg.gnn.head]
         self.post_mp = GNNHead(dim_in=cfg.gnn.dim_inner, dim_out=dim_out)

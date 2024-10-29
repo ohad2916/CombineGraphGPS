@@ -14,6 +14,8 @@ from graphgps.utils import cfg_to_dict, flatten_dict, make_wandb_name
 
 
 def train_epoch(logger, loader, model, optimizer, scheduler, batch_accumulation):
+    for layer in model.model.layers:
+        print(layer.h_out_weights)
     model.train()
     optimizer.zero_grad()
     time_start = time.time()
