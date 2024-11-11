@@ -30,15 +30,17 @@ def parse_output_hiv(file):
     data = []
     epoch_data = {'epoch': None}
     param_pairs = []  # Track pairs of MPNN and Global Attention parameters for each layer
-
+    train_found = False
+    val_found = False
+    test_found = False
     with open(file, 'r') as file:
         lines = file.readlines()
-        finish = 0
+        
         for line in lines:
             # Extract training metrics
             train_match = train_pattern.search(line)
             if train_match:
-                finish += 1
+                train_found = True
                 epoch_data.update({
                     'epoch': int(train_match.group(1)),
                     'train_time_epoch': float(train_match.group(2)),
@@ -58,7 +60,7 @@ def parse_output_hiv(file):
             # Extract validation metrics
             val_match = val_pattern.search(line)
             if val_match:
-                finish += 1
+                val_found = True
                 epoch_data.update({
                     'epoch': int(val_match.group(1)),
                     'val_time_epoch': float(val_match.group(2)),
@@ -76,7 +78,7 @@ def parse_output_hiv(file):
             # Extract test metrics
             test_match = test_pattern.search(line)
             if test_match:
-                finish += 1
+                test_found = True
                 epoch_data.update({
                     'epoch': int(test_match.group(1)),
                     'test_time_epoch': float(test_match.group(2)),
@@ -99,7 +101,7 @@ def parse_output_hiv(file):
                 param_pairs.append({'mpnn_param': mpnn_value, 'global_attention_param': global_attention_value})
                 
             # Store epoch data when all metrics and parameters are captured
-            if finish == 3:
+            if val_found and train_found and test_found:
                 if (len(param_pairs) == 10 and filename in ['molhiv_GPS.out', 'molhiv_GPS+RWSE.out']) or (len(param_pairs) == 2 and filename == 'molhiv_GPS+RWSEdev.out'):
                 # Flatten param pairs into columns for the DataFrame
                     for i, params in enumerate(param_pairs):
@@ -108,7 +110,9 @@ def parse_output_hiv(file):
                     data.append(epoch_data.copy())
                     epoch_data = {'epoch': None}
                     param_pairs = []
-                    finish = 0
+                    train_found = False
+                    val_found = False
+                    test_found = False
         # Convert list of dictionaries to a pandas DataFrame
         df = pd.DataFrame(data)
     return df
@@ -134,61 +138,60 @@ def parse_output_pcba(filename):
     data = []
     epoch_data = {'epoch': None}
     param_pairs = []  # Track pairs of MPNN and Global Attention parameters for each layer
-    finish = 0
+    train_found = False
+    val_found = False
+    test_found = False
     # Process the lines one by one
     for line in content:
         # Match the train, val, and test patterns
         if train_pattern.match(line):
-            finish += 1
+            train_found = True
             match = train_pattern.search(line)
             epoch, time_epoch, eta, eta_hours, loss, lr, params, time_iter, accuracy, auc, ap = match.groups()
             epoch_data.update({
                 'epoch': int(epoch),
-                'time_epoch': float(time_epoch),
-                'eta': float(eta),
-                'eta_hours': float(eta_hours),
-                'loss': float(loss),
-                'lr': float(lr),
-                'params': int(params),
-                'time_iter': float(time_iter),
-                'accuracy': float(accuracy),
-                'auc': float(auc),
-                'ap': float(ap),
-                'data_type': 'train'
+                'test_time_epoch': float(time_epoch),
+                'train_eta': float(eta),
+                'train_eta_hours': float(eta_hours),
+                'test_loss': float(loss),
+                'test_lr': float(lr),
+                'test_params': int(params),
+                'test_time_iter': float(time_iter),
+                'test_accuracy': float(accuracy),
+                'test_auc': float(auc),
+                'test_ap': float(ap),
             })
 
         elif val_pattern.match(line):
-            finish += 1
+            val_found = True
             match = val_pattern.search(line)
             epoch, time_epoch, loss, lr, params, time_iter, accuracy, auc, ap = match.groups()
             epoch_data.update({
                 'epoch': int(epoch),
-                'time_epoch': float(time_epoch),
-                'loss': float(loss),
-                'lr': float(lr),
-                'params': int(params),
-                'time_iter': float(time_iter),
-                'accuracy': float(accuracy),
-                'auc': float(auc),
-                'ap': float(ap),
-                'data_type': 'val'
+                'val_time_epoch': float(time_epoch),
+                'val_loss': float(loss),
+                'val_lr': float(lr),
+                'val_params': int(params),
+                'val_time_iter': float(time_iter),
+                'val_accuracy': float(accuracy),
+                'val_auc': float(auc),
+                'val_ap': float(ap)
             })
 
         elif test_pattern.match(line):
-            finish += 1
+            test_found = True
             match = test_pattern.search(line)
             epoch, time_epoch, loss, lr, params, time_iter, accuracy, auc, ap = match.groups()
             epoch_data.update({
                 'epoch': int(epoch),
-                'time_epoch': float(time_epoch),
-                'loss': float(loss),
-                'lr': float(lr),
-                'params': int(params),
-                'time_iter': float(time_iter),
-                'accuracy': float(accuracy),
-                'auc': float(auc),
-                'ap': float(ap),
-                'data_type': 'test'
+                'test_time_epoch': float(time_epoch),
+                'test_loss': float(loss),
+                'test_lr': float(lr),
+                'test_params': int(params),
+                'test_time_iter': float(time_iter),
+                'test_accuracy': float(accuracy),
+                'test_auc': float(auc),
+                'test_ap': float(ap)
             })
         
         param_match = param_pattern.search(line)
@@ -197,7 +200,7 @@ def parse_output_pcba(filename):
             global_attention_value = float(param_match.group(2))
             param_pairs.append({'mpnn_param': mpnn_value, 'global_attention_param': global_attention_value})
         
-        if finish == 3 and len(param_pairs) == 5:
+        if val_found and train_found and test_found and len(param_pairs) == 5:
             # Flatten param pairs into columns for the DataFrame
             for i, params in enumerate(param_pairs):
                 epoch_data[f'mpnn_param_layer_{i+1}'] = params['mpnn_param']
@@ -206,7 +209,10 @@ def parse_output_pcba(filename):
             data.append(epoch_data.copy())
             epoch_data = {'epoch': None}
             param_pairs = []
-            finish = 0
+            train_found = False
+            val_found = False
+            test_found = False
+            
 
     df = pd.DataFrame(data)
     return df
