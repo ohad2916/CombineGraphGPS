@@ -1,0 +1,1878 @@
+Starting job...
+Activated environment: /home/yandex/MLWG2024/michaelbest/anaconda3/envs/graphgps
+Sun Nov 10 23:13:15 2024       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.116.04   Driver Version: 525.116.04   CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA TITAN Xp     On   | 00000000:3D:00.0 Off |                  N/A |
+| 23%   25C    P8     8W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA TITAN Xp     On   | 00000000:3E:00.0 Off |                  N/A |
+| 23%   26C    P8     8W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   2  NVIDIA TITAN Xp     On   | 00000000:60:00.0 Off |                  N/A |
+| 23%   23C    P8     9W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   3  NVIDIA TITAN Xp     On   | 00000000:61:00.0 Off |                  N/A |
+| 23%   26C    P8     9W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   4  NVIDIA TITAN Xp     On   | 00000000:B1:00.0 Off |                  N/A |
+| 23%   21C    P8     8W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   5  NVIDIA TITAN Xp     On   | 00000000:B2:00.0 Off |                  N/A |
+| 23%   21C    P8     8W / 250W |      1MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   6  NVIDIA TITAN Xp     On   | 00000000:DA:00.0 Off |                  N/A |
+| 23%   20C    P8     8W / 250W |      4MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   7  NVIDIA TITAN Xp     On   | 00000000:DB:00.0 Off |                  N/A |
+| 23%   25C    P8     9W / 250W |      4MiB / 12288MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+[*] Run ID 0: seed=0, split_index=0
+    Starting now: 2024-11-10 23:13:30.175364
+[*] Loaded dataset 'ogbg-molpcba' from 'OGB':
+  Data(edge_index=[2, 24618372], edge_attr=[24618372, 3], x=[11373137, 9], y=[437929, 128], num_nodes=11373137)
+  undirected: True
+  num graphs: 437929
+  avg num_nodes/graph: 25
+  num node features: 9
+  num edge features: 3
+  num tasks: 128
+  num classes: 2
+Precomputing Positional Encoding statistics: ['LapPE'] for all graphs...
+  ...estimated to be undirected: True
+Done! Took 00:08:24.71
+GraphGymModule(
+  (model): GPSModel(
+    (encoder): FeatureEncoder(
+      (node_encoder): Concat2NodeEncoder(
+        (encoder1): AtomEncoder(
+          (atom_embedding_list): ModuleList(
+            (0): Embedding(119, 368)
+            (1): Embedding(5, 368)
+            (2-3): 2 x Embedding(12, 368)
+            (4): Embedding(10, 368)
+            (5-6): 2 x Embedding(6, 368)
+            (7-8): 2 x Embedding(2, 368)
+          )
+        )
+        (encoder2): LapPENodeEncoder(
+          (linear_A): Linear(in_features=2, out_features=32, bias=True)
+          (pe_encoder): Sequential(
+            (0): ReLU()
+            (1): Linear(in_features=32, out_features=16, bias=True)
+            (2): ReLU()
+          )
+        )
+      )
+      (edge_encoder): BondEncoder(
+        (bond_embedding_list): ModuleList(
+          (0): Embedding(5, 384)
+          (1): Embedding(6, 384)
+          (2): Embedding(2, 384)
+        )
+      )
+    )
+    (layers): Sequential(
+      (0): GPSLayer(
+        summary: dim_h=384, local_gnn_type=CustomGatedGCN, global_model_type=Transformer, heads=4
+        (local_model): GatedGCNLayer()
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=384, out_features=384, bias=True)
+        )
+        (norm1_local): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (norm1_attn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout_local): Dropout(p=0.2, inplace=False)
+        (dropout_attn): Dropout(p=0.2, inplace=False)
+        (ff_linear1): Linear(in_features=384, out_features=768, bias=True)
+        (ff_linear2): Linear(in_features=768, out_features=384, bias=True)
+        (act_fn_ff): ReLU()
+        (norm2): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (ff_dropout1): Dropout(p=0.2, inplace=False)
+        (ff_dropout2): Dropout(p=0.2, inplace=False)
+      )
+      (1): GPSLayer(
+        summary: dim_h=384, local_gnn_type=CustomGatedGCN, global_model_type=Transformer, heads=4
+        (local_model): GatedGCNLayer()
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=384, out_features=384, bias=True)
+        )
+        (norm1_local): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (norm1_attn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout_local): Dropout(p=0.2, inplace=False)
+        (dropout_attn): Dropout(p=0.2, inplace=False)
+        (ff_linear1): Linear(in_features=384, out_features=768, bias=True)
+        (ff_linear2): Linear(in_features=768, out_features=384, bias=True)
+        (act_fn_ff): ReLU()
+        (norm2): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (ff_dropout1): Dropout(p=0.2, inplace=False)
+        (ff_dropout2): Dropout(p=0.2, inplace=False)
+      )
+      (2): GPSLayer(
+        summary: dim_h=384, local_gnn_type=CustomGatedGCN, global_model_type=Transformer, heads=4
+        (local_model): GatedGCNLayer()
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=384, out_features=384, bias=True)
+        )
+        (norm1_local): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (norm1_attn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout_local): Dropout(p=0.2, inplace=False)
+        (dropout_attn): Dropout(p=0.2, inplace=False)
+        (ff_linear1): Linear(in_features=384, out_features=768, bias=True)
+        (ff_linear2): Linear(in_features=768, out_features=384, bias=True)
+        (act_fn_ff): ReLU()
+        (norm2): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (ff_dropout1): Dropout(p=0.2, inplace=False)
+        (ff_dropout2): Dropout(p=0.2, inplace=False)
+      )
+      (3): GPSLayer(
+        summary: dim_h=384, local_gnn_type=CustomGatedGCN, global_model_type=Transformer, heads=4
+        (local_model): GatedGCNLayer()
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=384, out_features=384, bias=True)
+        )
+        (norm1_local): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (norm1_attn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout_local): Dropout(p=0.2, inplace=False)
+        (dropout_attn): Dropout(p=0.2, inplace=False)
+        (ff_linear1): Linear(in_features=384, out_features=768, bias=True)
+        (ff_linear2): Linear(in_features=768, out_features=384, bias=True)
+        (act_fn_ff): ReLU()
+        (norm2): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (ff_dropout1): Dropout(p=0.2, inplace=False)
+        (ff_dropout2): Dropout(p=0.2, inplace=False)
+      )
+      (4): GPSLayer(
+        summary: dim_h=384, local_gnn_type=CustomGatedGCN, global_model_type=Transformer, heads=4
+        (local_model): GatedGCNLayer()
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=384, out_features=384, bias=True)
+        )
+        (norm1_local): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (norm1_attn): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (dropout_local): Dropout(p=0.2, inplace=False)
+        (dropout_attn): Dropout(p=0.2, inplace=False)
+        (ff_linear1): Linear(in_features=384, out_features=768, bias=True)
+        (ff_linear2): Linear(in_features=768, out_features=384, bias=True)
+        (act_fn_ff): ReLU()
+        (norm2): BatchNorm1d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (ff_dropout1): Dropout(p=0.2, inplace=False)
+        (ff_dropout2): Dropout(p=0.2, inplace=False)
+      )
+    )
+    (post_mp): GNNGraphHead(
+      (layer_post_mp): MLP(
+        (model): Sequential(
+          (0): Linear(
+            (model): Linear(384, 128, bias=True)
+          )
+        )
+      )
+    )
+  )
+)
+accelerator: cuda
+benchmark: False
+bn:
+  eps: 1e-05
+  mom: 0.1
+cfg_dest: config.yaml
+custom_metrics: []
+dataset:
+  cache_load: False
+  cache_save: False
+  dir: ./datasets
+  edge_dim: 128
+  edge_encoder: True
+  edge_encoder_bn: False
+  edge_encoder_name: Bond
+  edge_encoder_num_types: 0
+  edge_message_ratio: 0.8
+  edge_negative_sampling_ratio: 1.0
+  edge_train_mode: all
+  encoder: True
+  encoder_bn: True
+  encoder_dim: 128
+  encoder_name: db
+  format: OGB
+  infer_link_label: None
+  label_column: none
+  label_table: none
+  location: local
+  name: ogbg-molpcba
+  node_encoder: True
+  node_encoder_bn: False
+  node_encoder_name: Atom+LapPE
+  node_encoder_num_types: 0
+  remove_feature: False
+  resample_disjoint: False
+  resample_negative: False
+  shuffle_split: True
+  slic_compactness: 10
+  split: [0.8, 0.1, 0.1]
+  split_dir: ./splits
+  split_index: 0
+  split_mode: standard
+  task: graph
+  task_type: classification_multilabel
+  to_undirected: False
+  transductive: False
+  transform: none
+  tu_simple: True
+devices: 1
+example_arg: example
+example_group:
+  example_arg: example
+gnn:
+  act: relu
+  agg: mean
+  att_final_linear: False
+  att_final_linear_bn: False
+  att_heads: 1
+  batchnorm: True
+  clear_feature: True
+  dim_edge: 384
+  dim_inner: 384
+  dropout: 0.0
+  head: graph
+  keep_edge: 0.5
+  l2norm: True
+  layer_type: generalconv
+  layers_mp: 2
+  layers_post_mp: 1
+  layers_pre_mp: 0
+  msg_direction: single
+  normalize_adj: False
+  residual: False
+  self_msg: concat
+  skip_every: 1
+  stage_type: stack
+gpu_mem: False
+graphormer:
+  attention_dropout: 0.0
+  dropout: 0.0
+  embed_dim: 80
+  input_dropout: 0.0
+  mlp_dropout: 0.0
+  num_heads: 4
+  num_layers: 6
+  use_graph_token: True
+gt:
+  attn_dropout: 0.5
+  batch_norm: True
+  bigbird:
+    add_cross_attention: False
+    attention_type: block_sparse
+    block_size: 3
+    chunk_size_feed_forward: 0
+    hidden_act: relu
+    is_decoder: False
+    layer_norm_eps: 1e-06
+    max_position_embeddings: 128
+    num_random_blocks: 3
+    use_bias: False
+  dim_hidden: 384
+  dropout: 0.2
+  full_graph: True
+  gamma: 1e-05
+  layer_norm: False
+  layer_type: CustomGatedGCN+Transformer
+  layers: 5
+  n_heads: 4
+  pna_degrees: []
+  residual: True
+mem:
+  inplace: False
+metric_agg: argmax
+metric_best: ap
+model:
+  edge_decoding: dot
+  graph_pooling: mean
+  loss_fun: cross_entropy
+  match_upper: True
+  size_average: mean
+  thresh: 0.5
+  type: GPSModel
+name_tag: 
+num_threads: 6
+num_workers: 0
+optim:
+  base_lr: 0.0005
+  batch_accumulation: 1
+  clip_grad_norm: True
+  clip_grad_norm_value: 1.0
+  lr_decay: 0.1
+  max_epoch: 100
+  min_lr: 0.0
+  momentum: 0.9
+  num_warmup_epochs: 5
+  optimizer: adamW
+  reduce_factor: 0.1
+  schedule_patience: 10
+  scheduler: cosine_with_warmup
+  steps: [30, 60, 90]
+  weight_decay: 1e-05
+out_dir: results/ogbg-molpcba-GPS
+posenc_ElstaticSE:
+  dim_pe: 16
+  enable: False
+  kernel:
+    times: []
+    times_func: range(10)
+  layers: 3
+  model: none
+  n_heads: 4
+  pass_as_var: False
+  post_layers: 0
+  raw_norm_type: none
+posenc_EquivStableLapPE:
+  eigen:
+    eigvec_norm: L2
+    laplacian_norm: sym
+    max_freqs: 10
+  enable: False
+  raw_norm_type: none
+posenc_GraphormerBias:
+  dim_pe: 0
+  enable: False
+  node_degrees_only: False
+  num_in_degrees: None
+  num_out_degrees: None
+  num_spatial_types: None
+posenc_HKdiagSE:
+  dim_pe: 16
+  enable: False
+  kernel:
+    times: []
+    times_func: 
+  layers: 3
+  model: none
+  n_heads: 4
+  pass_as_var: False
+  post_layers: 0
+  raw_norm_type: none
+posenc_LapPE:
+  dim_pe: 16
+  eigen:
+    eigvec_norm: L2
+    laplacian_norm: none
+    max_freqs: 10
+  enable: True
+  layers: 2
+  model: DeepSet
+  n_heads: 4
+  pass_as_var: False
+  post_layers: 0
+  raw_norm_type: none
+posenc_RWSE:
+  dim_pe: 16
+  enable: False
+  kernel:
+    times: []
+    times_func: 
+  layers: 3
+  model: none
+  n_heads: 4
+  pass_as_var: False
+  post_layers: 0
+  raw_norm_type: none
+posenc_SignNet:
+  dim_pe: 16
+  eigen:
+    eigvec_norm: L2
+    laplacian_norm: sym
+    max_freqs: 10
+  enable: False
+  layers: 3
+  model: none
+  n_heads: 4
+  pass_as_var: False
+  phi_hidden_dim: 64
+  phi_out_dim: 4
+  post_layers: 0
+  raw_norm_type: none
+pretrained:
+  dir: 
+  freeze_main: False
+  reset_prediction_head: True
+print: both
+round: 5
+run_dir: results/ogbg-molpcba-GPS/0
+run_id: 0
+run_multiple_splits: []
+seed: 0
+share:
+  dim_in: 9
+  dim_out: 128
+  num_splits: 3
+tensorboard_agg: True
+tensorboard_each_run: False
+train:
+  auto_resume: False
+  batch_size: 512
+  ckpt_best: False
+  ckpt_clean: True
+  ckpt_period: 100
+  enable_ckpt: True
+  epoch_resume: -1
+  eval_period: 1
+  iter_per_epoch: 32
+  mode: custom
+  neighbor_sizes: [20, 15, 10, 5]
+  node_per_graph: 32
+  radius: extend
+  sample_node: False
+  sampler: full_batch
+  skip_train_eval: False
+  walk_length: 4
+val:
+  node_per_graph: 32
+  radius: extend
+  sample_node: False
+  sampler: full_batch
+view_emb: False
+wandb:
+  entity: gtransformers
+  name: 
+  project: molpcba
+  use: False
+Num parameters: 9745818
+Start from epoch 0
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+train: {'epoch': 0, 'time_epoch': 344.53189, 'eta': 34108.65691, 'eta_hours': 9.47463, 'loss': 0.70017564, 'lr': 0.0, 'params': 9745818, 'time_iter': 0.50297, 'accuracy': 0.49477, 'auc': 0.51124, 'ap': 0.02067}
+...computing epoch stats took: 10.88s
+val: {'epoch': 0, 'time_epoch': 21.36732, 'loss': 0.70442501, 'lr': 0, 'params': 9745818, 'time_iter': 0.24846, 'accuracy': 0.47955, 'auc': 0.51733, 'ap': 0.02758}
+...computing epoch stats took: 1.41s
+test: {'epoch': 0, 'time_epoch': 23.85902, 'loss': 0.705769, 'lr': 0, 'params': 9745818, 'time_iter': 0.27743, 'accuracy': 0.47956, 'auc': 0.50611, 'ap': 0.028}
+...computing epoch stats took: 1.36s
+> Epoch 0: took 403.6s (avg 403.6s) | Best so far: epoch 0	train_loss: 0.7002 train_ap: 0.0207	val_loss: 0.7044 val_ap: 0.0276	test_loss: 0.7058 test_ap: 0.0280
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1., 1.], device='cuda:0', requires_grad=True)
+train: {'epoch': 1, 'time_epoch': 263.78912, 'eta': 29807.72932, 'eta_hours': 8.27992, 'loss': 0.37259665, 'lr': 0.0001, 'params': 9745818, 'time_iter': 0.38509, 'accuracy': 0.91387, 'auc': 0.54299, 'ap': 0.03137}
+...computing epoch stats took: 9.22s
+val: {'epoch': 1, 'time_epoch': 13.83184, 'loss': 0.19368876, 'lr': 0, 'params': 9745818, 'time_iter': 0.16084, 'accuracy': 0.96449, 'auc': 0.58868, 'ap': 0.03947}
+...computing epoch stats took: 1.39s
+test: {'epoch': 1, 'time_epoch': 14.53526, 'loss': 0.23232485, 'lr': 0, 'params': 9745818, 'time_iter': 0.16901, 'accuracy': 0.96275, 'auc': 0.58113, 'ap': 0.04009}
+...computing epoch stats took: 1.36s
+> Epoch 1: took 304.1s (avg 353.9s) | Best so far: epoch 1	train_loss: 0.3726 train_ap: 0.0314	val_loss: 0.1937 val_ap: 0.0395	test_loss: 0.2323 test_ap: 0.0401
+Parameter containing:
+tensor([1.0082, 0.9918], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0031, 0.9969], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([0.9910, 1.0090], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([0.9964, 1.0036], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0084, 0.9916], device='cuda:0', requires_grad=True)
+train: {'epoch': 2, 'time_epoch': 263.1703, 'eta': 28178.21902, 'eta_hours': 7.82728, 'loss': 0.07680691, 'lr': 0.0002, 'params': 9745818, 'time_iter': 0.38419, 'accuracy': 0.97917, 'auc': 0.61339, 'ap': 0.04274}
+...computing epoch stats took: 9.16s
+val: {'epoch': 2, 'time_epoch': 13.37506, 'loss': 0.06431583, 'lr': 0, 'params': 9745818, 'time_iter': 0.15552, 'accuracy': 0.97527, 'auc': 0.72895, 'ap': 0.07712}
+...computing epoch stats took: 1.29s
+test: {'epoch': 2, 'time_epoch': 14.03102, 'loss': 0.06654843, 'lr': 0, 'params': 9745818, 'time_iter': 0.16315, 'accuracy': 0.97393, 'auc': 0.72543, 'ap': 0.08241}
+...computing epoch stats took: 1.28s
+> Epoch 2: took 302.3s (avg 336.7s) | Best so far: epoch 2	train_loss: 0.0768 train_ap: 0.0427	val_loss: 0.0643 val_ap: 0.0771	test_loss: 0.0665 test_ap: 0.0824
+Parameter containing:
+tensor([1.0136, 0.9864], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0108, 0.9892], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0037, 0.9963], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0083, 0.9917], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0264, 0.9736], device='cuda:0', requires_grad=True)
+train: {'epoch': 3, 'time_epoch': 260.44282, 'eta': 27166.41922, 'eta_hours': 7.54623, 'loss': 0.04906953, 'lr': 0.0003, 'params': 9745818, 'time_iter': 0.38021, 'accuracy': 0.98126, 'auc': 0.72713, 'ap': 0.08109}
+val: {'epoch': 3, 'time_epoch': 15.11804, 'loss': 0.0562911, 'lr': 0, 'params': 9745818, 'time_iter': 0.17579, 'accuracy': 0.97717, 'auc': 0.76385, 'ap': 0.10616}
+test: {'epoch': 3, 'time_epoch': 14.02746, 'loss': 0.05888969, 'lr': 0, 'params': 9745818, 'time_iter': 0.16311, 'accuracy': 0.97564, 'auc': 0.75882, 'ap': 0.10967}
+> Epoch 3: took 301.5s (avg 327.9s) | Best so far: epoch 3	train_loss: 0.0491 train_ap: 0.0811	val_loss: 0.0563 val_ap: 0.1062	test_loss: 0.0589 test_ap: 0.1097
+Parameter containing:
+tensor([1.0176, 0.9824], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0137, 0.9863], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0089, 0.9911], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0174, 0.9826], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0445, 0.9555], device='cuda:0', requires_grad=True)
+train: {'epoch': 4, 'time_epoch': 259.27097, 'eta': 26432.89689, 'eta_hours': 7.34247, 'loss': 0.04536869, 'lr': 0.0004, 'params': 9745818, 'time_iter': 0.3785, 'accuracy': 0.98196, 'auc': 0.79014, 'ap': 0.10726}
+val: {'epoch': 4, 'time_epoch': 13.31809, 'loss': 0.05402515, 'lr': 0, 'params': 9745818, 'time_iter': 0.15486, 'accuracy': 0.97774, 'auc': 0.80587, 'ap': 0.13009}
+test: {'epoch': 4, 'time_epoch': 14.0287, 'loss': 0.05662556, 'lr': 0, 'params': 9745818, 'time_iter': 0.16312, 'accuracy': 0.97615, 'auc': 0.80175, 'ap': 0.13276}
+> Epoch 4: took 302.3s (avg 322.8s) | Best so far: epoch 4	train_loss: 0.0454 train_ap: 0.1073	val_loss: 0.0540 val_ap: 0.1301	test_loss: 0.0566 test_ap: 0.1328
+Parameter containing:
+tensor([1.0253, 0.9747], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0197, 0.9803], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0206, 0.9794], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0427, 0.9573], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0900, 0.9100], device='cuda:0', requires_grad=True)
+train: {'epoch': 5, 'time_epoch': 262.19767, 'eta': 25903.31013, 'eta_hours': 7.19536, 'loss': 0.04342241, 'lr': 0.0005, 'params': 9745818, 'time_iter': 0.38277, 'accuracy': 0.98263, 'auc': 0.818, 'ap': 0.12689}
+val: {'epoch': 5, 'time_epoch': 13.34982, 'loss': 0.05186311, 'lr': 0, 'params': 9745818, 'time_iter': 0.15523, 'accuracy': 0.97841, 'auc': 0.82683, 'ap': 0.15451}
+test: {'epoch': 5, 'time_epoch': 14.03024, 'loss': 0.05438267, 'lr': 0, 'params': 9745818, 'time_iter': 0.16314, 'accuracy': 0.97707, 'auc': 0.8222, 'ap': 0.15187}
+> Epoch 5: took 305.4s (avg 319.9s) | Best so far: epoch 5	train_loss: 0.0434 train_ap: 0.1269	val_loss: 0.0519 val_ap: 0.1545	test_loss: 0.0544 test_ap: 0.1519
+Parameter containing:
+tensor([1.0353, 0.9647], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0310, 0.9690], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0453, 0.9547], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1011, 0.8989], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1717, 0.8283], device='cuda:0', requires_grad=True)
+train: {'epoch': 6, 'time_epoch': 259.75946, 'eta': 25417.72679, 'eta_hours': 7.06048, 'loss': 0.04168198, 'lr': 0.00049986, 'params': 9745818, 'time_iter': 0.37921, 'accuracy': 0.98319, 'auc': 0.84015, 'ap': 0.15077}
+val: {'epoch': 6, 'time_epoch': 13.36054, 'loss': 0.05067985, 'lr': 0, 'params': 9745818, 'time_iter': 0.15536, 'accuracy': 0.97856, 'auc': 0.83445, 'ap': 0.1731}
+test: {'epoch': 6, 'time_epoch': 14.06301, 'loss': 0.05299938, 'lr': 0, 'params': 9745818, 'time_iter': 0.16352, 'accuracy': 0.97752, 'auc': 0.83196, 'ap': 0.17097}
+> Epoch 6: took 302.9s (avg 317.5s) | Best so far: epoch 6	train_loss: 0.0417 train_ap: 0.1508	val_loss: 0.0507 val_ap: 0.1731	test_loss: 0.0530 test_ap: 0.1710
+Parameter containing:
+tensor([1.0450, 0.9550], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0454, 0.9546], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0778, 0.9222], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1799, 0.8201], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.2650, 0.7350], device='cuda:0', requires_grad=True)
+train: {'epoch': 7, 'time_epoch': 262.55423, 'eta': 25020.73926, 'eta_hours': 6.95021, 'loss': 0.040272, 'lr': 0.00049945, 'params': 9745818, 'time_iter': 0.38329, 'accuracy': 0.98354, 'auc': 0.85292, 'ap': 0.17116}
+val: {'epoch': 7, 'time_epoch': 13.32849, 'loss': 0.04873729, 'lr': 0, 'params': 9745818, 'time_iter': 0.15498, 'accuracy': 0.97882, 'auc': 0.85099, 'ap': 0.19272}
+test: {'epoch': 7, 'time_epoch': 14.09349, 'loss': 0.05088774, 'lr': 0, 'params': 9745818, 'time_iter': 0.16388, 'accuracy': 0.97787, 'auc': 0.84869, 'ap': 0.18631}
+> Epoch 7: took 305.8s (avg 316.0s) | Best so far: epoch 7	train_loss: 0.0403 train_ap: 0.1712	val_loss: 0.0487 val_ap: 0.1927	test_loss: 0.0509 test_ap: 0.1863
+Parameter containing:
+tensor([1.0562, 0.9438], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0661, 0.9339], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1228, 0.8772], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.2757, 0.7243], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.3447, 0.6553], device='cuda:0', requires_grad=True)
+train: {'epoch': 8, 'time_epoch': 261.29321, 'eta': 24640.87552, 'eta_hours': 6.84469, 'loss': 0.0391736, 'lr': 0.00049877, 'params': 9745818, 'time_iter': 0.38145, 'accuracy': 0.98386, 'auc': 0.86342, 'ap': 0.191}
+val: {'epoch': 8, 'time_epoch': 13.37695, 'loss': 0.048545, 'lr': 0, 'params': 9745818, 'time_iter': 0.15555, 'accuracy': 0.97915, 'auc': 0.85928, 'ap': 0.20378}
+test: {'epoch': 8, 'time_epoch': 14.05201, 'loss': 0.05083529, 'lr': 0, 'params': 9745818, 'time_iter': 0.1634, 'accuracy': 0.97776, 'auc': 0.85505, 'ap': 0.20169}
+> Epoch 8: took 304.5s (avg 314.7s) | Best so far: epoch 8	train_loss: 0.0392 train_ap: 0.1910	val_loss: 0.0485 val_ap: 0.2038	test_loss: 0.0508 test_ap: 0.2017
+Parameter containing:
+tensor([1.0719, 0.9281], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.0946, 0.9054], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1802, 0.8198], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.3702, 0.6298], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4114, 0.5886], device='cuda:0', requires_grad=True)
+train: {'epoch': 9, 'time_epoch': 261.06957, 'eta': 24282.7131, 'eta_hours': 6.7452, 'loss': 0.03821974, 'lr': 0.00049782, 'params': 9745818, 'time_iter': 0.38112, 'accuracy': 0.98434, 'auc': 0.87083, 'ap': 0.20804}
+val: {'epoch': 9, 'time_epoch': 13.39964, 'loss': 0.04814594, 'lr': 0, 'params': 9745818, 'time_iter': 0.15581, 'accuracy': 0.9788, 'auc': 0.86105, 'ap': 0.21379}
+test: {'epoch': 9, 'time_epoch': 14.03216, 'loss': 0.05046133, 'lr': 0, 'params': 9745818, 'time_iter': 0.16316, 'accuracy': 0.9777, 'auc': 0.85811, 'ap': 0.20997}
+> Epoch 9: took 304.3s (avg 313.7s) | Best so far: epoch 9	train_loss: 0.0382 train_ap: 0.2080	val_loss: 0.0481 val_ap: 0.2138	test_loss: 0.0505 test_ap: 0.2100
+Parameter containing:
+tensor([1.0877, 0.9123], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1347, 0.8653], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.2549, 0.7451], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4649, 0.5351], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4636, 0.5364], device='cuda:0', requires_grad=True)
+train: {'epoch': 10, 'time_epoch': 260.31658, 'eta': 23936.11154, 'eta_hours': 6.64892, 'loss': 0.03740793, 'lr': 0.00049659, 'params': 9745818, 'time_iter': 0.38002, 'accuracy': 0.98458, 'auc': 0.87848, 'ap': 0.22164}
+val: {'epoch': 10, 'time_epoch': 13.35769, 'loss': 0.04659853, 'lr': 0, 'params': 9745818, 'time_iter': 0.15532, 'accuracy': 0.97957, 'auc': 0.86766, 'ap': 0.22819}
+test: {'epoch': 10, 'time_epoch': 14.05918, 'loss': 0.04888497, 'lr': 0, 'params': 9745818, 'time_iter': 0.16348, 'accuracy': 0.97823, 'auc': 0.86555, 'ap': 0.22286}
+> Epoch 10: took 299.7s (avg 312.4s) | Best so far: epoch 10	train_loss: 0.0374 train_ap: 0.2216	val_loss: 0.0466 val_ap: 0.2282	test_loss: 0.0489 test_ap: 0.2229
+Parameter containing:
+tensor([1.1095, 0.8905], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.1887, 0.8113], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.3372, 0.6628], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5335, 0.4665], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5022, 0.4978], device='cuda:0', requires_grad=True)
+train: {'epoch': 11, 'time_epoch': 262.59285, 'eta': 23620.58352, 'eta_hours': 6.56127, 'loss': 0.03658714, 'lr': 0.00049509, 'params': 9745818, 'time_iter': 0.38335, 'accuracy': 0.98493, 'auc': 0.88496, 'ap': 0.24138}
+val: {'epoch': 11, 'time_epoch': 13.31275, 'loss': 0.04585831, 'lr': 0, 'params': 9745818, 'time_iter': 0.1548, 'accuracy': 0.98027, 'auc': 0.87162, 'ap': 0.23618}
+test: {'epoch': 11, 'time_epoch': 14.02683, 'loss': 0.04792389, 'lr': 0, 'params': 9745818, 'time_iter': 0.1631, 'accuracy': 0.97915, 'auc': 0.86783, 'ap': 0.23557}
+> Epoch 11: took 301.9s (avg 311.5s) | Best so far: epoch 11	train_loss: 0.0366 train_ap: 0.2414	val_loss: 0.0459 val_ap: 0.2362	test_loss: 0.0479 test_ap: 0.2356
+Parameter containing:
+tensor([1.1284, 0.8717], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.2590, 0.7410], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4081, 0.5919], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5846, 0.4154], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5330, 0.4670], device='cuda:0', requires_grad=True)
+train: {'epoch': 12, 'time_epoch': 260.43781, 'eta': 23298.77717, 'eta_hours': 6.47188, 'loss': 0.03591838, 'lr': 0.00049333, 'params': 9745818, 'time_iter': 0.3802, 'accuracy': 0.98519, 'auc': 0.88961, 'ap': 0.25693}
+val: {'epoch': 12, 'time_epoch': 15.25002, 'loss': 0.04582165, 'lr': 0, 'params': 9745818, 'time_iter': 0.17733, 'accuracy': 0.98042, 'auc': 0.87446, 'ap': 0.24035}
+test: {'epoch': 12, 'time_epoch': 13.99052, 'loss': 0.04820395, 'lr': 0, 'params': 9745818, 'time_iter': 0.16268, 'accuracy': 0.9788, 'auc': 0.87037, 'ap': 0.23608}
+> Epoch 12: took 301.8s (avg 310.8s) | Best so far: epoch 12	train_loss: 0.0359 train_ap: 0.2569	val_loss: 0.0458 val_ap: 0.2404	test_loss: 0.0482 test_ap: 0.2361
+Parameter containing:
+tensor([1.1520, 0.8480], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.3339, 0.6661], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4773, 0.5227], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6274, 0.3726], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5630, 0.4370], device='cuda:0', requires_grad=True)
+train: {'epoch': 13, 'time_epoch': 260.64315, 'eta': 22986.99912, 'eta_hours': 6.38528, 'loss': 0.03522517, 'lr': 0.0004913, 'params': 9745818, 'time_iter': 0.3805, 'accuracy': 0.9855, 'auc': 0.89464, 'ap': 0.26944}
+val: {'epoch': 13, 'time_epoch': 13.31465, 'loss': 0.04536894, 'lr': 0, 'params': 9745818, 'time_iter': 0.15482, 'accuracy': 0.98064, 'auc': 0.87567, 'ap': 0.24765}
+test: {'epoch': 13, 'time_epoch': 14.08995, 'loss': 0.04753094, 'lr': 0, 'params': 9745818, 'time_iter': 0.16384, 'accuracy': 0.97943, 'auc': 0.87281, 'ap': 0.24866}
+> Epoch 13: took 300.2s (avg 310.0s) | Best so far: epoch 13	train_loss: 0.0352 train_ap: 0.2694	val_loss: 0.0454 val_ap: 0.2477	test_loss: 0.0475 test_ap: 0.2487
+Parameter containing:
+tensor([1.1737, 0.8263], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4006, 0.5994], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5388, 0.4612], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6519, 0.3481], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5760, 0.4239], device='cuda:0', requires_grad=True)
+train: {'epoch': 14, 'time_epoch': 261.84447, 'eta': 22688.84656, 'eta_hours': 6.30246, 'loss': 0.03465275, 'lr': 0.00048901, 'params': 9745818, 'time_iter': 0.38225, 'accuracy': 0.98567, 'auc': 0.8984, 'ap': 0.28281}
+val: {'epoch': 14, 'time_epoch': 13.3411, 'loss': 0.04510915, 'lr': 0, 'params': 9745818, 'time_iter': 0.15513, 'accuracy': 0.98057, 'auc': 0.87867, 'ap': 0.25253}
+test: {'epoch': 14, 'time_epoch': 14.02965, 'loss': 0.0473428, 'lr': 0, 'params': 9745818, 'time_iter': 0.16314, 'accuracy': 0.97917, 'auc': 0.8746, 'ap': 0.24758}
+> Epoch 14: took 301.3s (avg 309.4s) | Best so far: epoch 14	train_loss: 0.0347 train_ap: 0.2828	val_loss: 0.0451 val_ap: 0.2525	test_loss: 0.0473 test_ap: 0.2476
+Parameter containing:
+tensor([1.1988, 0.8012], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.4610, 0.5390], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5855, 0.4145], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6737, 0.3263], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5889, 0.4111], device='cuda:0', requires_grad=True)
+train: {'epoch': 15, 'time_epoch': 261.10737, 'eta': 22391.36269, 'eta_hours': 6.21982, 'loss': 0.03405205, 'lr': 0.00048645, 'params': 9745818, 'time_iter': 0.38118, 'accuracy': 0.9859, 'auc': 0.90292, 'ap': 0.29755}
+val: {'epoch': 15, 'time_epoch': 13.3814, 'loss': 0.04485242, 'lr': 0, 'params': 9745818, 'time_iter': 0.1556, 'accuracy': 0.9805, 'auc': 0.8813, 'ap': 0.25544}
+test: {'epoch': 15, 'time_epoch': 14.04097, 'loss': 0.04706159, 'lr': 0, 'params': 9745818, 'time_iter': 0.16327, 'accuracy': 0.97944, 'auc': 0.877, 'ap': 0.25369}
+> Epoch 15: took 300.7s (avg 308.9s) | Best so far: epoch 15	train_loss: 0.0341 train_ap: 0.2975	val_loss: 0.0449 val_ap: 0.2554	test_loss: 0.0471 test_ap: 0.2537
+Parameter containing:
+tensor([1.2212, 0.7788], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5140, 0.4860], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6160, 0.3840], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6837, 0.3163], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6005, 0.3995], device='cuda:0', requires_grad=True)
+train: {'epoch': 16, 'time_epoch': 261.7158, 'eta': 22101.12898, 'eta_hours': 6.1392, 'loss': 0.03356719, 'lr': 0.00048364, 'params': 9745818, 'time_iter': 0.38207, 'accuracy': 0.98605, 'auc': 0.90581, 'ap': 0.3078}
+val: {'epoch': 16, 'time_epoch': 13.30955, 'loss': 0.04459849, 'lr': 0, 'params': 9745818, 'time_iter': 0.15476, 'accuracy': 0.98021, 'auc': 0.88122, 'ap': 0.25682}
+test: {'epoch': 16, 'time_epoch': 14.0856, 'loss': 0.04674356, 'lr': 0, 'params': 9745818, 'time_iter': 0.16379, 'accuracy': 0.97916, 'auc': 0.877, 'ap': 0.25446}
+> Epoch 16: took 301.1s (avg 308.4s) | Best so far: epoch 16	train_loss: 0.0336 train_ap: 0.3078	val_loss: 0.0446 val_ap: 0.2568	test_loss: 0.0467 test_ap: 0.2545
+Parameter containing:
+tensor([1.2378, 0.7623], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5556, 0.4444], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6569, 0.3430], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6842, 0.3158], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6097, 0.3903], device='cuda:0', requires_grad=True)
+train: {'epoch': 17, 'time_epoch': 262.08966, 'eta': 21815.76709, 'eta_hours': 6.05994, 'loss': 0.0331545, 'lr': 0.00048057, 'params': 9745818, 'time_iter': 0.38261, 'accuracy': 0.9863, 'auc': 0.90975, 'ap': 0.31504}
+val: {'epoch': 17, 'time_epoch': 13.31136, 'loss': 0.04427173, 'lr': 0, 'params': 9745818, 'time_iter': 0.15478, 'accuracy': 0.98077, 'auc': 0.88253, 'ap': 0.26513}
+test: {'epoch': 17, 'time_epoch': 14.02671, 'loss': 0.04650008, 'lr': 0, 'params': 9745818, 'time_iter': 0.1631, 'accuracy': 0.97938, 'auc': 0.87746, 'ap': 0.26253}
+> Epoch 17: took 301.5s (avg 308.1s) | Best so far: epoch 17	train_loss: 0.0332 train_ap: 0.3150	val_loss: 0.0443 val_ap: 0.2651	test_loss: 0.0465 test_ap: 0.2625
+Parameter containing:
+tensor([1.2569, 0.7431], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5900, 0.4100], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6811, 0.3189], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7018, 0.2982], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6163, 0.3837], device='cuda:0', requires_grad=True)
+train: {'epoch': 18, 'time_epoch': 260.85085, 'eta': 21527.57365, 'eta_hours': 5.97988, 'loss': 0.03263451, 'lr': 0.00047725, 'params': 9745818, 'time_iter': 0.3808, 'accuracy': 0.98644, 'auc': 0.91266, 'ap': 0.33205}
+val: {'epoch': 18, 'time_epoch': 13.51646, 'loss': 0.04481547, 'lr': 0, 'params': 9745818, 'time_iter': 0.15717, 'accuracy': 0.98056, 'auc': 0.88277, 'ap': 0.26868}
+test: {'epoch': 18, 'time_epoch': 14.17853, 'loss': 0.04684094, 'lr': 0, 'params': 9745818, 'time_iter': 0.16487, 'accuracy': 0.97956, 'auc': 0.87801, 'ap': 0.26713}
+> Epoch 18: took 301.0s (avg 307.7s) | Best so far: epoch 18	train_loss: 0.0326 train_ap: 0.3321	val_loss: 0.0448 val_ap: 0.2687	test_loss: 0.0468 test_ap: 0.2671
+Parameter containing:
+tensor([1.2790, 0.7210], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6177, 0.3823], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7021, 0.2979], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7087, 0.2913], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6167, 0.3833], device='cuda:0', requires_grad=True)
+train: {'epoch': 19, 'time_epoch': 261.61223, 'eta': 21245.15999, 'eta_hours': 5.90143, 'loss': 0.03226792, 'lr': 0.00047368, 'params': 9745818, 'time_iter': 0.38192, 'accuracy': 0.98655, 'auc': 0.91514, 'ap': 0.34173}
+val: {'epoch': 19, 'time_epoch': 13.40935, 'loss': 0.04398418, 'lr': 0, 'params': 9745818, 'time_iter': 0.15592, 'accuracy': 0.98123, 'auc': 0.88415, 'ap': 0.27059}
+test: {'epoch': 19, 'time_epoch': 16.06705, 'loss': 0.04630886, 'lr': 0, 'params': 9745818, 'time_iter': 0.18683, 'accuracy': 0.98014, 'auc': 0.87832, 'ap': 0.26557}
+> Epoch 19: took 303.3s (avg 307.5s) | Best so far: epoch 19	train_loss: 0.0323 train_ap: 0.3417	val_loss: 0.0440 val_ap: 0.2706	test_loss: 0.0463 test_ap: 0.2656
+Parameter containing:
+tensor([1.2955, 0.7045], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6470, 0.3530], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7214, 0.2786], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7143, 0.2857], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6254, 0.3746], device='cuda:0', requires_grad=True)
+train: {'epoch': 20, 'time_epoch': 260.87398, 'eta': 20961.95021, 'eta_hours': 5.82276, 'loss': 0.0319097, 'lr': 0.00046987, 'params': 9745818, 'time_iter': 0.38084, 'accuracy': 0.98673, 'auc': 0.91726, 'ap': 0.35017}
+val: {'epoch': 20, 'time_epoch': 13.38803, 'loss': 0.04388731, 'lr': 0, 'params': 9745818, 'time_iter': 0.15567, 'accuracy': 0.98128, 'auc': 0.88574, 'ap': 0.27575}
+test: {'epoch': 20, 'time_epoch': 14.12552, 'loss': 0.04611574, 'lr': 0, 'params': 9745818, 'time_iter': 0.16425, 'accuracy': 0.98011, 'auc': 0.88019, 'ap': 0.26989}
+> Epoch 20: took 300.6s (avg 307.1s) | Best so far: epoch 20	train_loss: 0.0319 train_ap: 0.3502	val_loss: 0.0439 val_ap: 0.2757	test_loss: 0.0461 test_ap: 0.2699
+Parameter containing:
+tensor([1.3059, 0.6941], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6527, 0.3473], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7349, 0.2651], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7116, 0.2884], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6280, 0.3720], device='cuda:0', requires_grad=True)
+train: {'epoch': 21, 'time_epoch': 261.7944, 'eta': 20684.03425, 'eta_hours': 5.74557, 'loss': 0.03149774, 'lr': 0.00046581, 'params': 9745818, 'time_iter': 0.38218, 'accuracy': 0.9869, 'auc': 0.92068, 'ap': 0.36075}
+val: {'epoch': 21, 'time_epoch': 13.33576, 'loss': 0.04433843, 'lr': 0, 'params': 9745818, 'time_iter': 0.15507, 'accuracy': 0.9811, 'auc': 0.88407, 'ap': 0.27363}
+test: {'epoch': 21, 'time_epoch': 14.11002, 'loss': 0.04653345, 'lr': 0, 'params': 9745818, 'time_iter': 0.16407, 'accuracy': 0.97969, 'auc': 0.87999, 'ap': 0.27139}
+> Epoch 21: took 301.5s (avg 306.9s) | Best so far: epoch 20	train_loss: 0.0319 train_ap: 0.3502	val_loss: 0.0439 val_ap: 0.2757	test_loss: 0.0461 test_ap: 0.2699
+Parameter containing:
+tensor([1.3255, 0.6745], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6699, 0.3302], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7412, 0.2588], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7111, 0.2889], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6316, 0.3684], device='cuda:0', requires_grad=True)
+train: {'epoch': 22, 'time_epoch': 260.72065, 'eta': 20403.92543, 'eta_hours': 5.66776, 'loss': 0.03115583, 'lr': 0.00046152, 'params': 9745818, 'time_iter': 0.38061, 'accuracy': 0.9871, 'auc': 0.92312, 'ap': 0.36968}
+val: {'epoch': 22, 'time_epoch': 13.38252, 'loss': 0.04384651, 'lr': 0, 'params': 9745818, 'time_iter': 0.15561, 'accuracy': 0.98119, 'auc': 0.88557, 'ap': 0.27874}
+test: {'epoch': 22, 'time_epoch': 14.03918, 'loss': 0.04609372, 'lr': 0, 'params': 9745818, 'time_iter': 0.16325, 'accuracy': 0.97983, 'auc': 0.87744, 'ap': 0.27219}
+> Epoch 22: took 300.3s (avg 306.6s) | Best so far: epoch 22	train_loss: 0.0312 train_ap: 0.3697	val_loss: 0.0438 val_ap: 0.2787	test_loss: 0.0461 test_ap: 0.2722
+Parameter containing:
+tensor([1.3423, 0.6578], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6879, 0.3121], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7466, 0.2534], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7103, 0.2897], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6308, 0.3692], device='cuda:0', requires_grad=True)
+train: {'epoch': 23, 'time_epoch': 261.37573, 'eta': 20127.50673, 'eta_hours': 5.59097, 'loss': 0.0308419, 'lr': 0.000457, 'params': 9745818, 'time_iter': 0.38157, 'accuracy': 0.98718, 'auc': 0.92555, 'ap': 0.37836}
+val: {'epoch': 23, 'time_epoch': 13.3995, 'loss': 0.04368922, 'lr': 0, 'params': 9745818, 'time_iter': 0.15581, 'accuracy': 0.98147, 'auc': 0.88335, 'ap': 0.28199}
+test: {'epoch': 23, 'time_epoch': 14.06834, 'loss': 0.04597656, 'lr': 0, 'params': 9745818, 'time_iter': 0.16359, 'accuracy': 0.98012, 'auc': 0.88068, 'ap': 0.27502}
+> Epoch 23: took 301.1s (avg 306.4s) | Best so far: epoch 23	train_loss: 0.0308 train_ap: 0.3784	val_loss: 0.0437 val_ap: 0.2820	test_loss: 0.0460 test_ap: 0.2750
+Parameter containing:
+tensor([1.3509, 0.6491], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6943, 0.3057], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7494, 0.2506], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7112, 0.2888], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6334, 0.3666], device='cuda:0', requires_grad=True)
+train: {'epoch': 24, 'time_epoch': 261.51831, 'eta': 19852.71918, 'eta_hours': 5.51464, 'loss': 0.03052724, 'lr': 0.00045225, 'params': 9745818, 'time_iter': 0.38178, 'accuracy': 0.98727, 'auc': 0.92738, 'ap': 0.38644}
+val: {'epoch': 24, 'time_epoch': 13.35165, 'loss': 0.04430083, 'lr': 0, 'params': 9745818, 'time_iter': 0.15525, 'accuracy': 0.98057, 'auc': 0.88501, 'ap': 0.28323}
+test: {'epoch': 24, 'time_epoch': 14.1241, 'loss': 0.04653413, 'lr': 0, 'params': 9745818, 'time_iter': 0.16423, 'accuracy': 0.97931, 'auc': 0.88089, 'ap': 0.27757}
+> Epoch 24: took 301.2s (avg 306.2s) | Best so far: epoch 24	train_loss: 0.0305 train_ap: 0.3864	val_loss: 0.0443 val_ap: 0.2832	test_loss: 0.0465 test_ap: 0.2776
+Parameter containing:
+tensor([1.3652, 0.6348], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7088, 0.2912], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7582, 0.2418], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7117, 0.2883], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6351, 0.3649], device='cuda:0', requires_grad=True)
+train: {'epoch': 25, 'time_epoch': 262.73315, 'eta': 19582.40997, 'eta_hours': 5.43956, 'loss': 0.03021216, 'lr': 0.00044729, 'params': 9745818, 'time_iter': 0.38355, 'accuracy': 0.9874, 'auc': 0.92964, 'ap': 0.3948}
+val: {'epoch': 25, 'time_epoch': 13.36877, 'loss': 0.04361544, 'lr': 0, 'params': 9745818, 'time_iter': 0.15545, 'accuracy': 0.9812, 'auc': 0.88469, 'ap': 0.28219}
+test: {'epoch': 25, 'time_epoch': 14.04113, 'loss': 0.04592861, 'lr': 0, 'params': 9745818, 'time_iter': 0.16327, 'accuracy': 0.98013, 'auc': 0.87935, 'ap': 0.28112}
+> Epoch 25: took 302.4s (avg 306.0s) | Best so far: epoch 24	train_loss: 0.0305 train_ap: 0.3864	val_loss: 0.0443 val_ap: 0.2832	test_loss: 0.0465 test_ap: 0.2776
+Parameter containing:
+tensor([1.3771, 0.6229], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7126, 0.2874], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7638, 0.2362], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7119, 0.2882], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6391, 0.3609], device='cuda:0', requires_grad=True)
+train: {'epoch': 26, 'time_epoch': 262.35956, 'eta': 19311.65189, 'eta_hours': 5.36435, 'loss': 0.02992247, 'lr': 0.0004421, 'params': 9745818, 'time_iter': 0.38301, 'accuracy': 0.98754, 'auc': 0.93127, 'ap': 0.40218}
+val: {'epoch': 26, 'time_epoch': 13.39605, 'loss': 0.043619, 'lr': 0, 'params': 9745818, 'time_iter': 0.15577, 'accuracy': 0.98138, 'auc': 0.88597, 'ap': 0.28424}
+test: {'epoch': 26, 'time_epoch': 14.06024, 'loss': 0.04583313, 'lr': 0, 'params': 9745818, 'time_iter': 0.16349, 'accuracy': 0.98009, 'auc': 0.88157, 'ap': 0.2819}
+> Epoch 26: took 302.0s (avg 305.9s) | Best so far: epoch 26	train_loss: 0.0299 train_ap: 0.4022	val_loss: 0.0436 val_ap: 0.2842	test_loss: 0.0458 test_ap: 0.2819
+Parameter containing:
+tensor([1.3892, 0.6108], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7275, 0.2725], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7623, 0.2377], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7124, 0.2876], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6370, 0.3629], device='cuda:0', requires_grad=True)
+train: {'epoch': 27, 'time_epoch': 262.77328, 'eta': 19042.55754, 'eta_hours': 5.2896, 'loss': 0.02965867, 'lr': 0.00043671, 'params': 9745818, 'time_iter': 0.38361, 'accuracy': 0.98771, 'auc': 0.93331, 'ap': 0.41202}
+val: {'epoch': 27, 'time_epoch': 13.3661, 'loss': 0.04369184, 'lr': 0, 'params': 9745818, 'time_iter': 0.15542, 'accuracy': 0.98145, 'auc': 0.88509, 'ap': 0.28714}
+test: {'epoch': 27, 'time_epoch': 14.08202, 'loss': 0.04583341, 'lr': 0, 'params': 9745818, 'time_iter': 0.16374, 'accuracy': 0.98031, 'auc': 0.88218, 'ap': 0.28005}
+> Epoch 27: took 302.4s (avg 305.7s) | Best so far: epoch 27	train_loss: 0.0297 train_ap: 0.4120	val_loss: 0.0437 val_ap: 0.2871	test_loss: 0.0458 test_ap: 0.2801
+Parameter containing:
+tensor([1.3996, 0.6004], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7370, 0.2630], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7662, 0.2338], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7113, 0.2888], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6364, 0.3636], device='cuda:0', requires_grad=True)
+train: {'epoch': 28, 'time_epoch': 262.76456, 'eta': 18773.8778, 'eta_hours': 5.21497, 'loss': 0.02937069, 'lr': 0.00043111, 'params': 9745818, 'time_iter': 0.3836, 'accuracy': 0.98785, 'auc': 0.93504, 'ap': 0.4199}
+val: {'epoch': 28, 'time_epoch': 13.4102, 'loss': 0.0435995, 'lr': 0, 'params': 9745818, 'time_iter': 0.15593, 'accuracy': 0.98143, 'auc': 0.88572, 'ap': 0.28672}
+test: {'epoch': 28, 'time_epoch': 16.05241, 'loss': 0.04591812, 'lr': 0, 'params': 9745818, 'time_iter': 0.18666, 'accuracy': 0.98, 'auc': 0.88009, 'ap': 0.28142}
+> Epoch 28: took 304.5s (avg 305.7s) | Best so far: epoch 27	train_loss: 0.0297 train_ap: 0.4120	val_loss: 0.0437 val_ap: 0.2871	test_loss: 0.0458 test_ap: 0.2801
+Parameter containing:
+tensor([1.4080, 0.5920], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7343, 0.2657], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7709, 0.2291], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7094, 0.2906], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6363, 0.3637], device='cuda:0', requires_grad=True)
+train: {'epoch': 29, 'time_epoch': 261.99485, 'eta': 18503.7964, 'eta_hours': 5.13994, 'loss': 0.029082, 'lr': 0.00042531, 'params': 9745818, 'time_iter': 0.38247, 'accuracy': 0.98793, 'auc': 0.93685, 'ap': 0.42725}
+val: {'epoch': 29, 'time_epoch': 13.37803, 'loss': 0.04397777, 'lr': 0, 'params': 9745818, 'time_iter': 0.15556, 'accuracy': 0.98123, 'auc': 0.88487, 'ap': 0.28812}
+test: {'epoch': 29, 'time_epoch': 14.11128, 'loss': 0.04634635, 'lr': 0, 'params': 9745818, 'time_iter': 0.16408, 'accuracy': 0.98014, 'auc': 0.8803, 'ap': 0.28168}
+> Epoch 29: took 301.7s (avg 305.6s) | Best so far: epoch 29	train_loss: 0.0291 train_ap: 0.4273	val_loss: 0.0440 val_ap: 0.2881	test_loss: 0.0463 test_ap: 0.2817
+Parameter containing:
+tensor([1.4170, 0.5830], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7446, 0.2554], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7723, 0.2277], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7068, 0.2933], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6312, 0.3688], device='cuda:0', requires_grad=True)
+train: {'epoch': 30, 'time_epoch': 262.4188, 'eta': 18235.18035, 'eta_hours': 5.06533, 'loss': 0.02882587, 'lr': 0.00041932, 'params': 9745818, 'time_iter': 0.38309, 'accuracy': 0.98792, 'auc': 0.93855, 'ap': 0.43245}
+val: {'epoch': 30, 'time_epoch': 13.33142, 'loss': 0.04403012, 'lr': 0, 'params': 9745818, 'time_iter': 0.15502, 'accuracy': 0.98133, 'auc': 0.88531, 'ap': 0.28669}
+test: {'epoch': 30, 'time_epoch': 14.11983, 'loss': 0.04622464, 'lr': 0, 'params': 9745818, 'time_iter': 0.16418, 'accuracy': 0.98019, 'auc': 0.88023, 'ap': 0.28532}
+> Epoch 30: took 302.1s (avg 305.5s) | Best so far: epoch 29	train_loss: 0.0291 train_ap: 0.4273	val_loss: 0.0440 val_ap: 0.2881	test_loss: 0.0463 test_ap: 0.2817
+Parameter containing:
+tensor([1.4261, 0.5739], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7498, 0.2502], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7820, 0.2180], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7097, 0.2904], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6342, 0.3658], device='cuda:0', requires_grad=True)
+train: {'epoch': 31, 'time_epoch': 260.4598, 'eta': 17962.78874, 'eta_hours': 4.98966, 'loss': 0.02860288, 'lr': 0.00041315, 'params': 9745818, 'time_iter': 0.38023, 'accuracy': 0.9881, 'auc': 0.94035, 'ap': 0.43883}
+val: {'epoch': 31, 'time_epoch': 13.36758, 'loss': 0.04420838, 'lr': 0, 'params': 9745818, 'time_iter': 0.15544, 'accuracy': 0.98139, 'auc': 0.88428, 'ap': 0.28592}
+test: {'epoch': 31, 'time_epoch': 14.03358, 'loss': 0.04639555, 'lr': 0, 'params': 9745818, 'time_iter': 0.16318, 'accuracy': 0.98009, 'auc': 0.87816, 'ap': 0.28784}
+> Epoch 31: took 300.1s (avg 305.3s) | Best so far: epoch 29	train_loss: 0.0291 train_ap: 0.4273	val_loss: 0.0440 val_ap: 0.2881	test_loss: 0.0463 test_ap: 0.2817
+Parameter containing:
+tensor([1.4372, 0.5629], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7611, 0.2389], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7794, 0.2206], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7045, 0.2956], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6352, 0.3648], device='cuda:0', requires_grad=True)
+train: {'epoch': 32, 'time_epoch': 262.16565, 'eta': 17694.58368, 'eta_hours': 4.91516, 'loss': 0.02834699, 'lr': 0.00040679, 'params': 9745818, 'time_iter': 0.38272, 'accuracy': 0.98824, 'auc': 0.9416, 'ap': 0.44833}
+val: {'epoch': 32, 'time_epoch': 13.36522, 'loss': 0.04417834, 'lr': 0, 'params': 9745818, 'time_iter': 0.15541, 'accuracy': 0.98141, 'auc': 0.88352, 'ap': 0.28967}
+test: {'epoch': 32, 'time_epoch': 14.04587, 'loss': 0.04648686, 'lr': 0, 'params': 9745818, 'time_iter': 0.16332, 'accuracy': 0.9799, 'auc': 0.87818, 'ap': 0.28439}
+> Epoch 32: took 301.8s (avg 305.2s) | Best so far: epoch 32	train_loss: 0.0283 train_ap: 0.4483	val_loss: 0.0442 val_ap: 0.2897	test_loss: 0.0465 test_ap: 0.2844
+Parameter containing:
+tensor([1.4427, 0.5573], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7555, 0.2445], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7793, 0.2207], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7010, 0.2990], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6292, 0.3708], device='cuda:0', requires_grad=True)
+train: {'epoch': 33, 'time_epoch': 259.65331, 'eta': 17421.85697, 'eta_hours': 4.8394, 'loss': 0.02812388, 'lr': 0.00040027, 'params': 9745818, 'time_iter': 0.37906, 'accuracy': 0.98843, 'auc': 0.94378, 'ap': 0.45056}
+val: {'epoch': 33, 'time_epoch': 13.38693, 'loss': 0.04406631, 'lr': 0, 'params': 9745818, 'time_iter': 0.15566, 'accuracy': 0.98104, 'auc': 0.88228, 'ap': 0.29483}
+test: {'epoch': 33, 'time_epoch': 14.07377, 'loss': 0.04642908, 'lr': 0, 'params': 9745818, 'time_iter': 0.16365, 'accuracy': 0.97967, 'auc': 0.87941, 'ap': 0.28689}
+> Epoch 33: took 299.3s (avg 305.0s) | Best so far: epoch 33	train_loss: 0.0281 train_ap: 0.4506	val_loss: 0.0441 val_ap: 0.2948	test_loss: 0.0464 test_ap: 0.2869
+Parameter containing:
+tensor([1.4474, 0.5526], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7569, 0.2431], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7847, 0.2153], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6961, 0.3040], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6357, 0.3643], device='cuda:0', requires_grad=True)
+train: {'epoch': 34, 'time_epoch': 261.62437, 'eta': 17153.53786, 'eta_hours': 4.76487, 'loss': 0.02788079, 'lr': 0.00039358, 'params': 9745818, 'time_iter': 0.38193, 'accuracy': 0.98837, 'auc': 0.94476, 'ap': 0.46008}
+val: {'epoch': 34, 'time_epoch': 13.37704, 'loss': 0.04374429, 'lr': 0, 'params': 9745818, 'time_iter': 0.15555, 'accuracy': 0.98143, 'auc': 0.88327, 'ap': 0.2921}
+test: {'epoch': 34, 'time_epoch': 14.08572, 'loss': 0.04632128, 'lr': 0, 'params': 9745818, 'time_iter': 0.16379, 'accuracy': 0.97999, 'auc': 0.87812, 'ap': 0.28289}
+> Epoch 34: took 301.3s (avg 304.9s) | Best so far: epoch 33	train_loss: 0.0281 train_ap: 0.4506	val_loss: 0.0441 val_ap: 0.2948	test_loss: 0.0464 test_ap: 0.2869
+Parameter containing:
+tensor([1.4542, 0.5458], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7601, 0.2399], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7833, 0.2167], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6994, 0.3006], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6302, 0.3697], device='cuda:0', requires_grad=True)
+train: {'epoch': 35, 'time_epoch': 260.63462, 'eta': 16883.83112, 'eta_hours': 4.68995, 'loss': 0.0276199, 'lr': 0.00038674, 'params': 9745818, 'time_iter': 0.38049, 'accuracy': 0.98856, 'auc': 0.94689, 'ap': 0.46415}
+val: {'epoch': 35, 'time_epoch': 13.33571, 'loss': 0.04410859, 'lr': 0, 'params': 9745818, 'time_iter': 0.15507, 'accuracy': 0.98154, 'auc': 0.88207, 'ap': 0.29321}
+test: {'epoch': 35, 'time_epoch': 14.08054, 'loss': 0.04657763, 'lr': 0, 'params': 9745818, 'time_iter': 0.16373, 'accuracy': 0.9799, 'auc': 0.8774, 'ap': 0.28812}
+> Epoch 35: took 300.2s (avg 304.8s) | Best so far: epoch 33	train_loss: 0.0281 train_ap: 0.4506	val_loss: 0.0441 val_ap: 0.2948	test_loss: 0.0464 test_ap: 0.2869
+Parameter containing:
+tensor([1.4630, 0.5370], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7676, 0.2324], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7843, 0.2157], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6891, 0.3109], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6292, 0.3708], device='cuda:0', requires_grad=True)
+train: {'epoch': 36, 'time_epoch': 261.02475, 'eta': 16615.27904, 'eta_hours': 4.61536, 'loss': 0.02741498, 'lr': 0.00037974, 'params': 9745818, 'time_iter': 0.38106, 'accuracy': 0.98857, 'auc': 0.94746, 'ap': 0.4701}
+val: {'epoch': 36, 'time_epoch': 13.35558, 'loss': 0.04430123, 'lr': 0, 'params': 9745818, 'time_iter': 0.1553, 'accuracy': 0.98136, 'auc': 0.88036, 'ap': 0.29672}
+test: {'epoch': 36, 'time_epoch': 14.02921, 'loss': 0.04681112, 'lr': 0, 'params': 9745818, 'time_iter': 0.16313, 'accuracy': 0.97988, 'auc': 0.87713, 'ap': 0.28716}
+> Epoch 36: took 300.6s (avg 304.7s) | Best so far: epoch 36	train_loss: 0.0274 train_ap: 0.4701	val_loss: 0.0443 val_ap: 0.2967	test_loss: 0.0468 test_ap: 0.2872
+Parameter containing:
+tensor([1.4677, 0.5323], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7711, 0.2289], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7866, 0.2134], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6888, 0.3112], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6259, 0.3741], device='cuda:0', requires_grad=True)
+train: {'epoch': 37, 'time_epoch': 260.80138, 'eta': 16346.75869, 'eta_hours': 4.54077, 'loss': 0.02718881, 'lr': 0.00037261, 'params': 9745818, 'time_iter': 0.38073, 'accuracy': 0.98875, 'auc': 0.94902, 'ap': 0.4797}
+val: {'epoch': 37, 'time_epoch': 13.41028, 'loss': 0.04431951, 'lr': 0, 'params': 9745818, 'time_iter': 0.15593, 'accuracy': 0.98121, 'auc': 0.88313, 'ap': 0.295}
+test: {'epoch': 37, 'time_epoch': 15.94332, 'loss': 0.04658454, 'lr': 0, 'params': 9745818, 'time_iter': 0.18539, 'accuracy': 0.97964, 'auc': 0.87851, 'ap': 0.28506}
+> Epoch 37: took 302.4s (avg 304.6s) | Best so far: epoch 36	train_loss: 0.0274 train_ap: 0.4701	val_loss: 0.0443 val_ap: 0.2967	test_loss: 0.0468 test_ap: 0.2872
+Parameter containing:
+tensor([1.4728, 0.5272], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7674, 0.2326], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7876, 0.2124], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6900, 0.3100], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6320, 0.3680], device='cuda:0', requires_grad=True)
+train: {'epoch': 38, 'time_epoch': 259.72058, 'eta': 16076.94371, 'eta_hours': 4.46582, 'loss': 0.02695414, 'lr': 0.00036534, 'params': 9745818, 'time_iter': 0.37915, 'accuracy': 0.98877, 'auc': 0.95055, 'ap': 0.48331}
+val: {'epoch': 38, 'time_epoch': 13.38706, 'loss': 0.04428638, 'lr': 0, 'params': 9745818, 'time_iter': 0.15566, 'accuracy': 0.98147, 'auc': 0.88318, 'ap': 0.29715}
+test: {'epoch': 38, 'time_epoch': 14.04162, 'loss': 0.04682607, 'lr': 0, 'params': 9745818, 'time_iter': 0.16327, 'accuracy': 0.97993, 'auc': 0.87626, 'ap': 0.28477}
+> Epoch 38: took 299.4s (avg 304.5s) | Best so far: epoch 38	train_loss: 0.0270 train_ap: 0.4833	val_loss: 0.0443 val_ap: 0.2972	test_loss: 0.0468 test_ap: 0.2848
+Parameter containing:
+tensor([1.4759, 0.5241], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7782, 0.2218], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7871, 0.2129], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6918, 0.3082], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6284, 0.3715], device='cuda:0', requires_grad=True)
+train: {'epoch': 39, 'time_epoch': 265.71034, 'eta': 15816.61808, 'eta_hours': 4.39351, 'loss': 0.02673831, 'lr': 0.00035794, 'params': 9745818, 'time_iter': 0.3879, 'accuracy': 0.98888, 'auc': 0.95192, 'ap': 0.48884}
+val: {'epoch': 39, 'time_epoch': 13.84876, 'loss': 0.04440506, 'lr': 0, 'params': 9745818, 'time_iter': 0.16103, 'accuracy': 0.98136, 'auc': 0.87833, 'ap': 0.29378}
+test: {'epoch': 39, 'time_epoch': 14.5704, 'loss': 0.04680974, 'lr': 0, 'params': 9745818, 'time_iter': 0.16942, 'accuracy': 0.97985, 'auc': 0.87548, 'ap': 0.28504}
+> Epoch 39: took 306.5s (avg 304.5s) | Best so far: epoch 38	train_loss: 0.0270 train_ap: 0.4833	val_loss: 0.0443 val_ap: 0.2972	test_loss: 0.0468 test_ap: 0.2848
+Parameter containing:
+tensor([1.4859, 0.5141], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7755, 0.2245], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7880, 0.2120], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6924, 0.3076], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6298, 0.3701], device='cuda:0', requires_grad=True)
+train: {'epoch': 40, 'time_epoch': 263.94695, 'eta': 15553.49222, 'eta_hours': 4.32041, 'loss': 0.02650313, 'lr': 0.00035042, 'params': 9745818, 'time_iter': 0.38532, 'accuracy': 0.98905, 'auc': 0.95316, 'ap': 0.49482}
+val: {'epoch': 40, 'time_epoch': 13.86153, 'loss': 0.04469676, 'lr': 0, 'params': 9745818, 'time_iter': 0.16118, 'accuracy': 0.98113, 'auc': 0.8801, 'ap': 0.29751}
+test: {'epoch': 40, 'time_epoch': 14.54174, 'loss': 0.04699389, 'lr': 0, 'params': 9745818, 'time_iter': 0.16909, 'accuracy': 0.97974, 'auc': 0.87633, 'ap': 0.28793}
+> Epoch 40: took 308.7s (avg 304.6s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.4895, 0.5105], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7711, 0.2289], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7825, 0.2175], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6817, 0.3183], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6243, 0.3757], device='cuda:0', requires_grad=True)
+train: {'epoch': 41, 'time_epoch': 264.62992, 'eta': 15291.27042, 'eta_hours': 4.24758, 'loss': 0.02630156, 'lr': 0.0003428, 'params': 9745818, 'time_iter': 0.38632, 'accuracy': 0.98911, 'auc': 0.95394, 'ap': 0.50248}
+val: {'epoch': 41, 'time_epoch': 13.34476, 'loss': 0.04440806, 'lr': 0, 'params': 9745818, 'time_iter': 0.15517, 'accuracy': 0.98113, 'auc': 0.87827, 'ap': 0.29697}
+test: {'epoch': 41, 'time_epoch': 14.02026, 'loss': 0.04677301, 'lr': 0, 'params': 9745818, 'time_iter': 0.16303, 'accuracy': 0.97989, 'auc': 0.87396, 'ap': 0.28542}
+> Epoch 41: took 307.9s (avg 304.7s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.4954, 0.5046], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7774, 0.2226], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7878, 0.2122], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6803, 0.3198], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6229, 0.3771], device='cuda:0', requires_grad=True)
+train: {'epoch': 42, 'time_epoch': 260.48757, 'eta': 15023.44558, 'eta_hours': 4.17318, 'loss': 0.02611431, 'lr': 0.00033507, 'params': 9745818, 'time_iter': 0.38027, 'accuracy': 0.98922, 'auc': 0.95549, 'ap': 0.50433}
+val: {'epoch': 42, 'time_epoch': 13.36052, 'loss': 0.04447851, 'lr': 0, 'params': 9745818, 'time_iter': 0.15535, 'accuracy': 0.98161, 'auc': 0.8779, 'ap': 0.29342}
+test: {'epoch': 42, 'time_epoch': 14.03185, 'loss': 0.04700206, 'lr': 0, 'params': 9745818, 'time_iter': 0.16316, 'accuracy': 0.97989, 'auc': 0.87661, 'ap': 0.28781}
+> Epoch 42: took 300.0s (avg 304.6s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.4959, 0.5041], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7848, 0.2152], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7858, 0.2142], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6777, 0.3224], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6206, 0.3794], device='cuda:0', requires_grad=True)
+train: {'epoch': 43, 'time_epoch': 263.28865, 'eta': 14759.51928, 'eta_hours': 4.09987, 'loss': 0.02591437, 'lr': 0.00032725, 'params': 9745818, 'time_iter': 0.38436, 'accuracy': 0.9893, 'auc': 0.9564, 'ap': 0.51553}
+val: {'epoch': 43, 'time_epoch': 13.36563, 'loss': 0.04444514, 'lr': 0, 'params': 9745818, 'time_iter': 0.15541, 'accuracy': 0.98133, 'auc': 0.87862, 'ap': 0.29538}
+test: {'epoch': 43, 'time_epoch': 14.0237, 'loss': 0.04709556, 'lr': 0, 'params': 9745818, 'time_iter': 0.16307, 'accuracy': 0.97978, 'auc': 0.87598, 'ap': 0.28467}
+> Epoch 43: took 302.8s (avg 304.5s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.4972, 0.5028], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7874, 0.2126], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7836, 0.2164], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6774, 0.3226], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6198, 0.3802], device='cuda:0', requires_grad=True)
+train: {'epoch': 44, 'time_epoch': 259.52822, 'eta': 14491.02523, 'eta_hours': 4.02528, 'loss': 0.02566495, 'lr': 0.00031935, 'params': 9745818, 'time_iter': 0.37887, 'accuracy': 0.98945, 'auc': 0.95777, 'ap': 0.51906}
+val: {'epoch': 44, 'time_epoch': 13.33518, 'loss': 0.04488318, 'lr': 0, 'params': 9745818, 'time_iter': 0.15506, 'accuracy': 0.981, 'auc': 0.87838, 'ap': 0.29252}
+test: {'epoch': 44, 'time_epoch': 14.05363, 'loss': 0.04753694, 'lr': 0, 'params': 9745818, 'time_iter': 0.16341, 'accuracy': 0.97936, 'auc': 0.87473, 'ap': 0.28327}
+> Epoch 44: took 299.0s (avg 304.4s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.5014, 0.4987], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7875, 0.2126], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7879, 0.2121], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6733, 0.3267], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6168, 0.3832], device='cuda:0', requires_grad=True)
+train: {'epoch': 45, 'time_epoch': 262.10901, 'eta': 14225.95061, 'eta_hours': 3.95165, 'loss': 0.02548923, 'lr': 0.00031137, 'params': 9745818, 'time_iter': 0.38264, 'accuracy': 0.98941, 'auc': 0.95813, 'ap': 0.52528}
+val: {'epoch': 45, 'time_epoch': 13.2868, 'loss': 0.04504453, 'lr': 0, 'params': 9745818, 'time_iter': 0.1545, 'accuracy': 0.98127, 'auc': 0.87586, 'ap': 0.29616}
+test: {'epoch': 45, 'time_epoch': 14.06156, 'loss': 0.04753898, 'lr': 0, 'params': 9745818, 'time_iter': 0.16351, 'accuracy': 0.97994, 'auc': 0.87342, 'ap': 0.28909}
+> Epoch 45: took 301.5s (avg 304.4s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.5019, 0.4981], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7899, 0.2101], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7822, 0.2178], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6679, 0.3321], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6174, 0.3826], device='cuda:0', requires_grad=True)
+train: {'epoch': 46, 'time_epoch': 260.80998, 'eta': 13959.53734, 'eta_hours': 3.87765, 'loss': 0.02531591, 'lr': 0.00030332, 'params': 9745818, 'time_iter': 0.38074, 'accuracy': 0.98949, 'auc': 0.96002, 'ap': 0.52927}
+val: {'epoch': 46, 'time_epoch': 15.35022, 'loss': 0.04529251, 'lr': 0, 'params': 9745818, 'time_iter': 0.17849, 'accuracy': 0.98108, 'auc': 0.87392, 'ap': 0.29227}
+test: {'epoch': 46, 'time_epoch': 14.00703, 'loss': 0.04784902, 'lr': 0, 'params': 9745818, 'time_iter': 0.16287, 'accuracy': 0.97956, 'auc': 0.86978, 'ap': 0.28293}
+> Epoch 46: took 302.2s (avg 304.3s) | Best so far: epoch 40	train_loss: 0.0265 train_ap: 0.4948	val_loss: 0.0447 val_ap: 0.2975	test_loss: 0.0470 test_ap: 0.2879
+Parameter containing:
+tensor([1.5056, 0.4945], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7927, 0.2073], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7761, 0.2239], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6683, 0.3317], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6155, 0.3845], device='cuda:0', requires_grad=True)
+train: {'epoch': 47, 'time_epoch': 260.64884, 'eta': 13693.18296, 'eta_hours': 3.80366, 'loss': 0.02509062, 'lr': 0.00029522, 'params': 9745818, 'time_iter': 0.38051, 'accuracy': 0.98958, 'auc': 0.96077, 'ap': 0.53423}
+val: {'epoch': 47, 'time_epoch': 13.37277, 'loss': 0.04529728, 'lr': 0, 'params': 9745818, 'time_iter': 0.1555, 'accuracy': 0.98116, 'auc': 0.87602, 'ap': 0.29833}
+test: {'epoch': 47, 'time_epoch': 14.04488, 'loss': 0.04788138, 'lr': 0, 'params': 9745818, 'time_iter': 0.16331, 'accuracy': 0.97978, 'auc': 0.87199, 'ap': 0.28764}
+> Epoch 47: took 300.1s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5078, 0.4922], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7988, 0.2012], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7803, 0.2197], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6664, 0.3336], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6178, 0.3822], device='cuda:0', requires_grad=True)
+train: {'epoch': 48, 'time_epoch': 261.88624, 'eta': 13428.34937, 'eta_hours': 3.7301, 'loss': 0.02489117, 'lr': 0.00028707, 'params': 9745818, 'time_iter': 0.38232, 'accuracy': 0.98974, 'auc': 0.96203, 'ap': 0.53977}
+val: {'epoch': 48, 'time_epoch': 13.99872, 'loss': 0.04523742, 'lr': 0, 'params': 9745818, 'time_iter': 0.16278, 'accuracy': 0.98093, 'auc': 0.87338, 'ap': 0.29613}
+test: {'epoch': 48, 'time_epoch': 14.64377, 'loss': 0.04786248, 'lr': 0, 'params': 9745818, 'time_iter': 0.17028, 'accuracy': 0.97945, 'auc': 0.87059, 'ap': 0.28726}
+> Epoch 48: took 303.3s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5063, 0.4937], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7910, 0.2090], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7800, 0.2201], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6680, 0.3320], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6139, 0.3861], device='cuda:0', requires_grad=True)
+train: {'epoch': 49, 'time_epoch': 263.02489, 'eta': 13164.77232, 'eta_hours': 3.65688, 'loss': 0.02468666, 'lr': 0.00027887, 'params': 9745818, 'time_iter': 0.38398, 'accuracy': 0.98976, 'auc': 0.96297, 'ap': 0.54454}
+val: {'epoch': 49, 'time_epoch': 13.80908, 'loss': 0.04540806, 'lr': 0, 'params': 9745818, 'time_iter': 0.16057, 'accuracy': 0.98121, 'auc': 0.87516, 'ap': 0.29557}
+test: {'epoch': 49, 'time_epoch': 14.55669, 'loss': 0.04806372, 'lr': 0, 'params': 9745818, 'time_iter': 0.16926, 'accuracy': 0.97981, 'auc': 0.87261, 'ap': 0.28524}
+> Epoch 49: took 303.8s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5083, 0.4917], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7909, 0.2091], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7793, 0.2207], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6662, 0.3339], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6091, 0.3909], device='cuda:0', requires_grad=True)
+train: {'epoch': 50, 'time_epoch': 263.27207, 'eta': 12901.45442, 'eta_hours': 3.58374, 'loss': 0.02449245, 'lr': 0.00027064, 'params': 9745818, 'time_iter': 0.38434, 'accuracy': 0.98983, 'auc': 0.96363, 'ap': 0.55458}
+val: {'epoch': 50, 'time_epoch': 13.3033, 'loss': 0.04554302, 'lr': 0, 'params': 9745818, 'time_iter': 0.15469, 'accuracy': 0.98117, 'auc': 0.87381, 'ap': 0.29587}
+test: {'epoch': 50, 'time_epoch': 14.04263, 'loss': 0.04818623, 'lr': 0, 'params': 9745818, 'time_iter': 0.16329, 'accuracy': 0.97967, 'auc': 0.8701, 'ap': 0.28563}
+> Epoch 50: took 306.6s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5087, 0.4913], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7921, 0.2079], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7808, 0.2192], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6626, 0.3374], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6091, 0.3909], device='cuda:0', requires_grad=True)
+train: {'epoch': 51, 'time_epoch': 260.7398, 'eta': 12635.8008, 'eta_hours': 3.50994, 'loss': 0.02431833, 'lr': 0.0002624, 'params': 9745818, 'time_iter': 0.38064, 'accuracy': 0.98994, 'auc': 0.96457, 'ap': 0.55868}
+val: {'epoch': 51, 'time_epoch': 13.34073, 'loss': 0.04589619, 'lr': 0, 'params': 9745818, 'time_iter': 0.15512, 'accuracy': 0.98105, 'auc': 0.87413, 'ap': 0.29501}
+test: {'epoch': 51, 'time_epoch': 14.01952, 'loss': 0.04843016, 'lr': 0, 'params': 9745818, 'time_iter': 0.16302, 'accuracy': 0.97972, 'auc': 0.87035, 'ap': 0.28494}
+> Epoch 51: took 300.3s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5112, 0.4888], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7948, 0.2052], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7800, 0.2200], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6651, 0.3349], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6072, 0.3928], device='cuda:0', requires_grad=True)
+train: {'epoch': 52, 'time_epoch': 261.31149, 'eta': 12370.83957, 'eta_hours': 3.43634, 'loss': 0.02413812, 'lr': 0.00025413, 'params': 9745818, 'time_iter': 0.38148, 'accuracy': 0.99001, 'auc': 0.96551, 'ap': 0.56186}
+val: {'epoch': 52, 'time_epoch': 13.36575, 'loss': 0.04577461, 'lr': 0, 'params': 9745818, 'time_iter': 0.15542, 'accuracy': 0.98106, 'auc': 0.87326, 'ap': 0.29807}
+test: {'epoch': 52, 'time_epoch': 14.00948, 'loss': 0.04841701, 'lr': 0, 'params': 9745818, 'time_iter': 0.1629, 'accuracy': 0.9795, 'auc': 0.87045, 'ap': 0.28615}
+> Epoch 52: took 304.7s (avg 304.2s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5117, 0.4883], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7965, 0.2035], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7791, 0.2209], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6591, 0.3409], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6068, 0.3931], device='cuda:0', requires_grad=True)
+train: {'epoch': 53, 'time_epoch': 261.28968, 'eta': 12105.99494, 'eta_hours': 3.36278, 'loss': 0.02402107, 'lr': 0.00024587, 'params': 9745818, 'time_iter': 0.38144, 'accuracy': 0.9901, 'auc': 0.96607, 'ap': 0.56426}
+val: {'epoch': 53, 'time_epoch': 13.34614, 'loss': 0.04594922, 'lr': 0, 'params': 9745818, 'time_iter': 0.15519, 'accuracy': 0.98129, 'auc': 0.87385, 'ap': 0.29537}
+test: {'epoch': 53, 'time_epoch': 14.00383, 'loss': 0.04856775, 'lr': 0, 'params': 9745818, 'time_iter': 0.16284, 'accuracy': 0.97972, 'auc': 0.87018, 'ap': 0.28551}
+> Epoch 53: took 300.7s (avg 304.1s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5129, 0.4871], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.8004, 0.1996], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7752, 0.2248], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6591, 0.3409], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6066, 0.3933], device='cuda:0', requires_grad=True)
+train: {'epoch': 54, 'time_epoch': 262.21589, 'eta': 11842.03739, 'eta_hours': 3.28945, 'loss': 0.02376043, 'lr': 0.0002376, 'params': 9745818, 'time_iter': 0.3828, 'accuracy': 0.99007, 'auc': 0.9673, 'ap': 0.56986}
+val: {'epoch': 54, 'time_epoch': 13.33049, 'loss': 0.04581569, 'lr': 0, 'params': 9745818, 'time_iter': 0.15501, 'accuracy': 0.98141, 'auc': 0.87195, 'ap': 0.29558}
+test: {'epoch': 54, 'time_epoch': 14.04806, 'loss': 0.04842955, 'lr': 0, 'params': 9745818, 'time_iter': 0.16335, 'accuracy': 0.9801, 'auc': 0.86951, 'ap': 0.28605}
+> Epoch 54: took 301.7s (avg 304.1s) | Best so far: epoch 47	train_loss: 0.0251 train_ap: 0.5342	val_loss: 0.0453 val_ap: 0.2983	test_loss: 0.0479 test_ap: 0.2876
+Parameter containing:
+tensor([1.5169, 0.4831], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7920, 0.2080], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7727, 0.2273], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6543, 0.3457], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6025, 0.3975], device='cuda:0', requires_grad=True)
+train: {'epoch': 55, 'time_epoch': 259.18455, 'eta': 11575.76027, 'eta_hours': 3.21549, 'loss': 0.02359347, 'lr': 0.00022936, 'params': 9745818, 'time_iter': 0.37837, 'accuracy': 0.99024, 'auc': 0.96805, 'ap': 0.57523}
+val: {'epoch': 55, 'time_epoch': 15.15598, 'loss': 0.0463155, 'lr': 0, 'params': 9745818, 'time_iter': 0.17623, 'accuracy': 0.98102, 'auc': 0.87191, 'ap': 0.29862}
+test: {'epoch': 55, 'time_epoch': 14.0438, 'loss': 0.0489239, 'lr': 0, 'params': 9745818, 'time_iter': 0.1633, 'accuracy': 0.97963, 'auc': 0.86897, 'ap': 0.28586}
+> Epoch 55: took 300.5s (avg 304.0s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5165, 0.4835], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7912, 0.2088], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7722, 0.2278], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6538, 0.3463], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6036, 0.3963], device='cuda:0', requires_grad=True)
+train: {'epoch': 56, 'time_epoch': 258.91818, 'eta': 11309.53107, 'eta_hours': 3.14154, 'loss': 0.02340066, 'lr': 0.00022113, 'params': 9745818, 'time_iter': 0.37798, 'accuracy': 0.99036, 'auc': 0.96905, 'ap': 0.58262}
+val: {'epoch': 56, 'time_epoch': 13.32892, 'loss': 0.04637999, 'lr': 0, 'params': 9745818, 'time_iter': 0.15499, 'accuracy': 0.98124, 'auc': 0.86982, 'ap': 0.29444}
+test: {'epoch': 56, 'time_epoch': 14.04626, 'loss': 0.04907764, 'lr': 0, 'params': 9745818, 'time_iter': 0.16333, 'accuracy': 0.97955, 'auc': 0.86746, 'ap': 0.28501}
+> Epoch 56: took 298.4s (avg 303.9s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5165, 0.4836], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7933, 0.2067], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7695, 0.2306], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6497, 0.3503], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6018, 0.3982], device='cuda:0', requires_grad=True)
+train: {'epoch': 57, 'time_epoch': 262.84329, 'eta': 11046.3963, 'eta_hours': 3.06844, 'loss': 0.02324098, 'lr': 0.00021293, 'params': 9745818, 'time_iter': 0.38371, 'accuracy': 0.99038, 'auc': 0.96934, 'ap': 0.58509}
+val: {'epoch': 57, 'time_epoch': 13.32066, 'loss': 0.04647119, 'lr': 0, 'params': 9745818, 'time_iter': 0.15489, 'accuracy': 0.98097, 'auc': 0.87225, 'ap': 0.29494}
+test: {'epoch': 57, 'time_epoch': 14.00841, 'loss': 0.04909988, 'lr': 0, 'params': 9745818, 'time_iter': 0.16289, 'accuracy': 0.97943, 'auc': 0.86899, 'ap': 0.28441}
+> Epoch 57: took 306.2s (avg 303.9s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5163, 0.4837], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7927, 0.2073], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7688, 0.2312], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6496, 0.3504], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5999, 0.4001], device='cuda:0', requires_grad=True)
+train: {'epoch': 58, 'time_epoch': 259.75742, 'eta': 10781.12699, 'eta_hours': 2.99476, 'loss': 0.02307844, 'lr': 0.00020478, 'params': 9745818, 'time_iter': 0.37921, 'accuracy': 0.99049, 'auc': 0.97027, 'ap': 0.58908}
+val: {'epoch': 58, 'time_epoch': 13.33404, 'loss': 0.04677951, 'lr': 0, 'params': 9745818, 'time_iter': 0.15505, 'accuracy': 0.98108, 'auc': 0.87044, 'ap': 0.29148}
+test: {'epoch': 58, 'time_epoch': 14.01628, 'loss': 0.049364, 'lr': 0, 'params': 9745818, 'time_iter': 0.16298, 'accuracy': 0.97966, 'auc': 0.86708, 'ap': 0.28543}
+> Epoch 58: took 299.2s (avg 303.9s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5197, 0.4803], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7994, 0.2006], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7676, 0.2324], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6449, 0.3551], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5997, 0.4003], device='cuda:0', requires_grad=True)
+train: {'epoch': 59, 'time_epoch': 262.6421, 'eta': 10517.96452, 'eta_hours': 2.92166, 'loss': 0.02289097, 'lr': 0.00019668, 'params': 9745818, 'time_iter': 0.38342, 'accuracy': 0.99056, 'auc': 0.97096, 'ap': 0.59176}
+val: {'epoch': 59, 'time_epoch': 13.34653, 'loss': 0.04690033, 'lr': 0, 'params': 9745818, 'time_iter': 0.15519, 'accuracy': 0.98105, 'auc': 0.86951, 'ap': 0.29382}
+test: {'epoch': 59, 'time_epoch': 14.00709, 'loss': 0.04960873, 'lr': 0, 'params': 9745818, 'time_iter': 0.16287, 'accuracy': 0.97948, 'auc': 0.86725, 'ap': 0.28392}
+> Epoch 59: took 302.1s (avg 303.8s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5168, 0.4832], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7970, 0.2030], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7685, 0.2315], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6440, 0.3560], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5995, 0.4005], device='cuda:0', requires_grad=True)
+train: {'epoch': 60, 'time_epoch': 260.27111, 'eta': 10253.30324, 'eta_hours': 2.84814, 'loss': 0.02275205, 'lr': 0.00018863, 'params': 9745818, 'time_iter': 0.37996, 'accuracy': 0.99069, 'auc': 0.97159, 'ap': 0.59955}
+val: {'epoch': 60, 'time_epoch': 13.32744, 'loss': 0.04723341, 'lr': 0, 'params': 9745818, 'time_iter': 0.15497, 'accuracy': 0.98085, 'auc': 0.87003, 'ap': 0.29422}
+test: {'epoch': 60, 'time_epoch': 14.03399, 'loss': 0.04981683, 'lr': 0, 'params': 9745818, 'time_iter': 0.16319, 'accuracy': 0.97934, 'auc': 0.86728, 'ap': 0.28464}
+> Epoch 60: took 303.7s (avg 303.8s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5183, 0.4817], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7945, 0.2055], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7685, 0.2315], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6387, 0.3613], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5962, 0.4038], device='cuda:0', requires_grad=True)
+train: {'epoch': 61, 'time_epoch': 261.57359, 'eta': 9989.58188, 'eta_hours': 2.77488, 'loss': 0.02258873, 'lr': 0.00018065, 'params': 9745818, 'time_iter': 0.38186, 'accuracy': 0.99066, 'auc': 0.97209, 'ap': 0.60244}
+val: {'epoch': 61, 'time_epoch': 13.32307, 'loss': 0.0469703, 'lr': 0, 'params': 9745818, 'time_iter': 0.15492, 'accuracy': 0.98111, 'auc': 0.86904, 'ap': 0.29596}
+test: {'epoch': 61, 'time_epoch': 14.05736, 'loss': 0.04963733, 'lr': 0, 'params': 9745818, 'time_iter': 0.16346, 'accuracy': 0.97948, 'auc': 0.86588, 'ap': 0.28593}
+> Epoch 61: took 305.0s (avg 303.9s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5187, 0.4813], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7964, 0.2036], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7698, 0.2302], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6395, 0.3605], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5983, 0.4017], device='cuda:0', requires_grad=True)
+train: {'epoch': 62, 'time_epoch': 261.17558, 'eta': 9725.69494, 'eta_hours': 2.70158, 'loss': 0.0224356, 'lr': 0.00017275, 'params': 9745818, 'time_iter': 0.38128, 'accuracy': 0.9907, 'auc': 0.97281, 'ap': 0.60448}
+val: {'epoch': 62, 'time_epoch': 13.27868, 'loss': 0.04709529, 'lr': 0, 'params': 9745818, 'time_iter': 0.1544, 'accuracy': 0.98102, 'auc': 0.86779, 'ap': 0.29406}
+test: {'epoch': 62, 'time_epoch': 14.04521, 'loss': 0.04971659, 'lr': 0, 'params': 9745818, 'time_iter': 0.16332, 'accuracy': 0.97935, 'auc': 0.86503, 'ap': 0.28621}
+> Epoch 62: took 300.6s (avg 303.8s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5181, 0.4820], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7926, 0.2074], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7653, 0.2347], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6390, 0.3610], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5933, 0.4067], device='cuda:0', requires_grad=True)
+train: {'epoch': 63, 'time_epoch': 261.22121, 'eta': 9461.91841, 'eta_hours': 2.62831, 'loss': 0.02227224, 'lr': 0.00016493, 'params': 9745818, 'time_iter': 0.38134, 'accuracy': 0.99083, 'auc': 0.97354, 'ap': 0.6122}
+val: {'epoch': 63, 'time_epoch': 13.32423, 'loss': 0.04740083, 'lr': 0, 'params': 9745818, 'time_iter': 0.15493, 'accuracy': 0.9811, 'auc': 0.86759, 'ap': 0.29626}
+test: {'epoch': 63, 'time_epoch': 14.04824, 'loss': 0.05007095, 'lr': 0, 'params': 9745818, 'time_iter': 0.16335, 'accuracy': 0.97941, 'auc': 0.86491, 'ap': 0.28586}
+> Epoch 63: took 300.8s (avg 303.8s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5215, 0.4785], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7986, 0.2014], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7668, 0.2332], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6380, 0.3621], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5917, 0.4083], device='cuda:0', requires_grad=True)
+train: {'epoch': 64, 'time_epoch': 260.81193, 'eta': 9198.00011, 'eta_hours': 2.555, 'loss': 0.02213576, 'lr': 0.0001572, 'params': 9745818, 'time_iter': 0.38075, 'accuracy': 0.99088, 'auc': 0.97403, 'ap': 0.61686}
+val: {'epoch': 64, 'time_epoch': 15.16969, 'loss': 0.04736734, 'lr': 0, 'params': 9745818, 'time_iter': 0.17639, 'accuracy': 0.98103, 'auc': 0.86833, 'ap': 0.2936}
+test: {'epoch': 64, 'time_epoch': 14.01666, 'loss': 0.05003429, 'lr': 0, 'params': 9745818, 'time_iter': 0.16298, 'accuracy': 0.97954, 'auc': 0.86472, 'ap': 0.28389}
+> Epoch 64: took 302.2s (avg 303.7s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5220, 0.4780], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7952, 0.2048], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7626, 0.2374], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6388, 0.3612], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5901, 0.4099], device='cuda:0', requires_grad=True)
+train: {'epoch': 65, 'time_epoch': 260.10651, 'eta': 8933.81255, 'eta_hours': 2.48161, 'loss': 0.0219791, 'lr': 0.00014958, 'params': 9745818, 'time_iter': 0.37972, 'accuracy': 0.99097, 'auc': 0.97464, 'ap': 0.61998}
+val: {'epoch': 65, 'time_epoch': 13.35048, 'loss': 0.04783458, 'lr': 0, 'params': 9745818, 'time_iter': 0.15524, 'accuracy': 0.98085, 'auc': 0.8671, 'ap': 0.2939}
+test: {'epoch': 65, 'time_epoch': 14.02004, 'loss': 0.05054344, 'lr': 0, 'params': 9745818, 'time_iter': 0.16302, 'accuracy': 0.97926, 'auc': 0.86471, 'ap': 0.2822}
+> Epoch 65: took 299.6s (avg 303.7s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5208, 0.4792], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7920, 0.2080], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7660, 0.2340], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6346, 0.3655], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5882, 0.4118], device='cuda:0', requires_grad=True)
+train: {'epoch': 66, 'time_epoch': 262.51461, 'eta': 8670.93289, 'eta_hours': 2.40859, 'loss': 0.02183411, 'lr': 0.00014206, 'params': 9745818, 'time_iter': 0.38323, 'accuracy': 0.99099, 'auc': 0.97483, 'ap': 0.62376}
+val: {'epoch': 66, 'time_epoch': 13.35868, 'loss': 0.04791932, 'lr': 0, 'params': 9745818, 'time_iter': 0.15533, 'accuracy': 0.98086, 'auc': 0.86535, 'ap': 0.29367}
+test: {'epoch': 66, 'time_epoch': 13.99905, 'loss': 0.05063642, 'lr': 0, 'params': 9745818, 'time_iter': 0.16278, 'accuracy': 0.97919, 'auc': 0.86225, 'ap': 0.28339}
+> Epoch 66: took 302.0s (avg 303.6s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5230, 0.4770], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7953, 0.2047], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7613, 0.2387], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6338, 0.3662], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5890, 0.4110], device='cuda:0', requires_grad=True)
+train: {'epoch': 67, 'time_epoch': 261.45771, 'eta': 8407.56661, 'eta_hours': 2.33544, 'loss': 0.02168225, 'lr': 0.00013466, 'params': 9745818, 'time_iter': 0.38169, 'accuracy': 0.99106, 'auc': 0.97559, 'ap': 0.62839}
+val: {'epoch': 67, 'time_epoch': 13.35972, 'loss': 0.04786352, 'lr': 0, 'params': 9745818, 'time_iter': 0.15535, 'accuracy': 0.98097, 'auc': 0.86675, 'ap': 0.2933}
+test: {'epoch': 67, 'time_epoch': 14.00956, 'loss': 0.05065559, 'lr': 0, 'params': 9745818, 'time_iter': 0.1629, 'accuracy': 0.97949, 'auc': 0.86236, 'ap': 0.28153}
+> Epoch 67: took 301.1s (avg 303.6s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5225, 0.4775], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7957, 0.2043], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7613, 0.2387], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6334, 0.3666], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5889, 0.4111], device='cuda:0', requires_grad=True)
+train: {'epoch': 68, 'time_epoch': 262.0899, 'eta': 8144.53967, 'eta_hours': 2.26237, 'loss': 0.02156851, 'lr': 0.00012739, 'params': 9745818, 'time_iter': 0.38261, 'accuracy': 0.99111, 'auc': 0.97609, 'ap': 0.63067}
+val: {'epoch': 68, 'time_epoch': 13.27044, 'loss': 0.04790374, 'lr': 0, 'params': 9745818, 'time_iter': 0.15431, 'accuracy': 0.98094, 'auc': 0.8677, 'ap': 0.2944}
+test: {'epoch': 68, 'time_epoch': 14.05071, 'loss': 0.05075653, 'lr': 0, 'params': 9745818, 'time_iter': 0.16338, 'accuracy': 0.97953, 'auc': 0.86266, 'ap': 0.28216}
+> Epoch 68: took 301.6s (avg 303.6s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5218, 0.4782], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7971, 0.2029], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7570, 0.2430], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6307, 0.3693], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5889, 0.4111], device='cuda:0', requires_grad=True)
+train: {'epoch': 69, 'time_epoch': 262.15002, 'eta': 7881.56527, 'eta_hours': 2.18932, 'loss': 0.02142916, 'lr': 0.00012026, 'params': 9745818, 'time_iter': 0.3827, 'accuracy': 0.99115, 'auc': 0.97619, 'ap': 0.63419}
+val: {'epoch': 69, 'time_epoch': 13.28356, 'loss': 0.04838306, 'lr': 0, 'params': 9745818, 'time_iter': 0.15446, 'accuracy': 0.98063, 'auc': 0.86734, 'ap': 0.29442}
+test: {'epoch': 69, 'time_epoch': 14.00818, 'loss': 0.05113184, 'lr': 0, 'params': 9745818, 'time_iter': 0.16289, 'accuracy': 0.97906, 'auc': 0.8629, 'ap': 0.28075}
+> Epoch 69: took 301.6s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5242, 0.4758], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7972, 0.2028], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7576, 0.2424], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6319, 0.3682], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5874, 0.4126], device='cuda:0', requires_grad=True)
+train: {'epoch': 70, 'time_epoch': 262.3376, 'eta': 7618.69071, 'eta_hours': 2.1163, 'loss': 0.02128524, 'lr': 0.00011326, 'params': 9745818, 'time_iter': 0.38297, 'accuracy': 0.99118, 'auc': 0.97703, 'ap': 0.63989}
+val: {'epoch': 70, 'time_epoch': 13.31981, 'loss': 0.04821527, 'lr': 0, 'params': 9745818, 'time_iter': 0.15488, 'accuracy': 0.98087, 'auc': 0.86687, 'ap': 0.29342}
+test: {'epoch': 70, 'time_epoch': 14.00784, 'loss': 0.05094545, 'lr': 0, 'params': 9745818, 'time_iter': 0.16288, 'accuracy': 0.97931, 'auc': 0.86261, 'ap': 0.28167}
+> Epoch 70: took 301.8s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5226, 0.4774], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7953, 0.2047], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7578, 0.2422], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6303, 0.3697], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5856, 0.4144], device='cuda:0', requires_grad=True)
+train: {'epoch': 71, 'time_epoch': 258.75782, 'eta': 7354.43893, 'eta_hours': 2.0429, 'loss': 0.02119299, 'lr': 0.00010642, 'params': 9745818, 'time_iter': 0.37775, 'accuracy': 0.99128, 'auc': 0.97696, 'ap': 0.64266}
+val: {'epoch': 71, 'time_epoch': 13.35235, 'loss': 0.04866035, 'lr': 0, 'params': 9745818, 'time_iter': 0.15526, 'accuracy': 0.98065, 'auc': 0.86614, 'ap': 0.29276}
+test: {'epoch': 71, 'time_epoch': 15.87415, 'loss': 0.05151935, 'lr': 0, 'params': 9745818, 'time_iter': 0.18458, 'accuracy': 0.97898, 'auc': 0.86137, 'ap': 0.28147}
+> Epoch 71: took 300.3s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5236, 0.4764], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7958, 0.2042], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7542, 0.2458], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6280, 0.3720], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5835, 0.4165], device='cuda:0', requires_grad=True)
+train: {'epoch': 72, 'time_epoch': 260.59808, 'eta': 7091.01831, 'eta_hours': 1.96973, 'loss': 0.02107292, 'lr': 9.973e-05, 'params': 9745818, 'time_iter': 0.38044, 'accuracy': 0.99132, 'auc': 0.97768, 'ap': 0.64579}
+val: {'epoch': 72, 'time_epoch': 13.99192, 'loss': 0.04860494, 'lr': 0, 'params': 9745818, 'time_iter': 0.1627, 'accuracy': 0.98074, 'auc': 0.86593, 'ap': 0.29478}
+test: {'epoch': 72, 'time_epoch': 14.68903, 'loss': 0.05146031, 'lr': 0, 'params': 9745818, 'time_iter': 0.1708, 'accuracy': 0.97909, 'auc': 0.86152, 'ap': 0.28276}
+> Epoch 72: took 302.2s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5233, 0.4767], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7964, 0.2036], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7520, 0.2480], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6261, 0.3739], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5833, 0.4167], device='cuda:0', requires_grad=True)
+train: {'epoch': 73, 'time_epoch': 263.74213, 'eta': 6828.77864, 'eta_hours': 1.89688, 'loss': 0.02097056, 'lr': 9.321e-05, 'params': 9745818, 'time_iter': 0.38503, 'accuracy': 0.99132, 'auc': 0.97802, 'ap': 0.64761}
+val: {'epoch': 73, 'time_epoch': 13.35943, 'loss': 0.04861487, 'lr': 0, 'params': 9745818, 'time_iter': 0.15534, 'accuracy': 0.98097, 'auc': 0.86527, 'ap': 0.29464}
+test: {'epoch': 73, 'time_epoch': 14.07992, 'loss': 0.05151391, 'lr': 0, 'params': 9745818, 'time_iter': 0.16372, 'accuracy': 0.97935, 'auc': 0.8614, 'ap': 0.28197}
+> Epoch 73: took 307.5s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5229, 0.4771], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7961, 0.2039], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7513, 0.2487], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6267, 0.3734], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5823, 0.4177], device='cuda:0', requires_grad=True)
+train: {'epoch': 74, 'time_epoch': 260.71164, 'eta': 6565.48874, 'eta_hours': 1.82375, 'loss': 0.02082316, 'lr': 8.685e-05, 'params': 9745818, 'time_iter': 0.3806, 'accuracy': 0.99132, 'auc': 0.97862, 'ap': 0.64869}
+val: {'epoch': 74, 'time_epoch': 13.32598, 'loss': 0.04874788, 'lr': 0, 'params': 9745818, 'time_iter': 0.15495, 'accuracy': 0.98096, 'auc': 0.86468, 'ap': 0.29448}
+test: {'epoch': 74, 'time_epoch': 14.08631, 'loss': 0.05164058, 'lr': 0, 'params': 9745818, 'time_iter': 0.16379, 'accuracy': 0.97933, 'auc': 0.86059, 'ap': 0.28233}
+> Epoch 74: took 300.4s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5235, 0.4765], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7986, 0.2014], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7518, 0.2482], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6252, 0.3748], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5811, 0.4189], device='cuda:0', requires_grad=True)
+train: {'epoch': 75, 'time_epoch': 263.24355, 'eta': 6303.06625, 'eta_hours': 1.75085, 'loss': 0.02070926, 'lr': 8.068e-05, 'params': 9745818, 'time_iter': 0.3843, 'accuracy': 0.99149, 'auc': 0.97878, 'ap': 0.65454}
+val: {'epoch': 75, 'time_epoch': 13.37495, 'loss': 0.04888747, 'lr': 0, 'params': 9745818, 'time_iter': 0.15552, 'accuracy': 0.98094, 'auc': 0.86457, 'ap': 0.29561}
+test: {'epoch': 75, 'time_epoch': 14.06566, 'loss': 0.05174757, 'lr': 0, 'params': 9745818, 'time_iter': 0.16355, 'accuracy': 0.97931, 'auc': 0.86038, 'ap': 0.28196}
+> Epoch 75: took 307.3s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5230, 0.4770], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7980, 0.2020], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7504, 0.2496], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6230, 0.3770], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5798, 0.4201], device='cuda:0', requires_grad=True)
+train: {'epoch': 76, 'time_epoch': 260.02063, 'eta': 6039.65973, 'eta_hours': 1.67768, 'loss': 0.02067094, 'lr': 7.469e-05, 'params': 9745818, 'time_iter': 0.37959, 'accuracy': 0.99144, 'auc': 0.9788, 'ap': 0.65287}
+val: {'epoch': 76, 'time_epoch': 13.35093, 'loss': 0.04906661, 'lr': 0, 'params': 9745818, 'time_iter': 0.15524, 'accuracy': 0.98056, 'auc': 0.86368, 'ap': 0.29412}
+test: {'epoch': 76, 'time_epoch': 14.05081, 'loss': 0.05189639, 'lr': 0, 'params': 9745818, 'time_iter': 0.16338, 'accuracy': 0.97909, 'auc': 0.85998, 'ap': 0.28074}
+> Epoch 76: took 303.5s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5248, 0.4752], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7989, 0.2011], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7488, 0.2512], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6218, 0.3782], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5813, 0.4187], device='cuda:0', requires_grad=True)
+train: {'epoch': 77, 'time_epoch': 262.98356, 'eta': 5777.17574, 'eta_hours': 1.60477, 'loss': 0.02053522, 'lr': 6.889e-05, 'params': 9745818, 'time_iter': 0.38392, 'accuracy': 0.99157, 'auc': 0.97921, 'ap': 0.65821}
+val: {'epoch': 77, 'time_epoch': 13.35936, 'loss': 0.04903934, 'lr': 0, 'params': 9745818, 'time_iter': 0.15534, 'accuracy': 0.9808, 'auc': 0.86334, 'ap': 0.29326}
+test: {'epoch': 77, 'time_epoch': 14.01494, 'loss': 0.05188561, 'lr': 0, 'params': 9745818, 'time_iter': 0.16296, 'accuracy': 0.97932, 'auc': 0.85939, 'ap': 0.28212}
+> Epoch 77: took 302.5s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5247, 0.4753], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7980, 0.2020], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7475, 0.2525], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6214, 0.3786], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5800, 0.4200], device='cuda:0', requires_grad=True)
+train: {'epoch': 78, 'time_epoch': 259.95139, 'eta': 5513.87307, 'eta_hours': 1.53163, 'loss': 0.02041576, 'lr': 6.329e-05, 'params': 9745818, 'time_iter': 0.37949, 'accuracy': 0.99164, 'auc': 0.97958, 'ap': 0.6598}
+val: {'epoch': 78, 'time_epoch': 13.33657, 'loss': 0.04910427, 'lr': 0, 'params': 9745818, 'time_iter': 0.15508, 'accuracy': 0.98066, 'auc': 0.86378, 'ap': 0.29562}
+test: {'epoch': 78, 'time_epoch': 14.03672, 'loss': 0.0520626, 'lr': 0, 'params': 9745818, 'time_iter': 0.16322, 'accuracy': 0.97908, 'auc': 0.86023, 'ap': 0.28247}
+> Epoch 78: took 299.7s (avg 303.5s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5243, 0.4757], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7986, 0.2014], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7474, 0.2526], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6208, 0.3792], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5788, 0.4211], device='cuda:0', requires_grad=True)
+train: {'epoch': 79, 'time_epoch': 261.0716, 'eta': 5250.93424, 'eta_hours': 1.45859, 'loss': 0.02039378, 'lr': 5.79e-05, 'params': 9745818, 'time_iter': 0.38113, 'accuracy': 0.99159, 'auc': 0.97958, 'ap': 0.65967}
+val: {'epoch': 79, 'time_epoch': 13.32172, 'loss': 0.04928419, 'lr': 0, 'params': 9745818, 'time_iter': 0.1549, 'accuracy': 0.98064, 'auc': 0.86346, 'ap': 0.29386}
+test: {'epoch': 79, 'time_epoch': 14.03029, 'loss': 0.05213686, 'lr': 0, 'params': 9745818, 'time_iter': 0.16314, 'accuracy': 0.97912, 'auc': 0.85992, 'ap': 0.2819}
+> Epoch 79: took 300.6s (avg 303.4s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7976, 0.2024], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7452, 0.2548], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6198, 0.3802], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5781, 0.4219], device='cuda:0', requires_grad=True)
+train: {'epoch': 80, 'time_epoch': 261.44294, 'eta': 4988.12862, 'eta_hours': 1.38559, 'loss': 0.02029793, 'lr': 5.271e-05, 'params': 9745818, 'time_iter': 0.38167, 'accuracy': 0.99169, 'auc': 0.98005, 'ap': 0.66545}
+val: {'epoch': 80, 'time_epoch': 13.30642, 'loss': 0.04915866, 'lr': 0, 'params': 9745818, 'time_iter': 0.15473, 'accuracy': 0.98068, 'auc': 0.8632, 'ap': 0.2941}
+test: {'epoch': 80, 'time_epoch': 15.87747, 'loss': 0.05206769, 'lr': 0, 'params': 9745818, 'time_iter': 0.18462, 'accuracy': 0.97919, 'auc': 0.85878, 'ap': 0.2801}
+> Epoch 80: took 302.8s (avg 303.4s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5244, 0.4757], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7964, 0.2036], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7443, 0.2557], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6201, 0.3799], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5775, 0.4225], device='cuda:0', requires_grad=True)
+train: {'epoch': 81, 'time_epoch': 259.70072, 'eta': 4724.97379, 'eta_hours': 1.31249, 'loss': 0.02018319, 'lr': 4.775e-05, 'params': 9745818, 'time_iter': 0.37913, 'accuracy': 0.99169, 'auc': 0.98033, 'ap': 0.6676}
+val: {'epoch': 81, 'time_epoch': 13.32333, 'loss': 0.04921155, 'lr': 0, 'params': 9745818, 'time_iter': 0.15492, 'accuracy': 0.98081, 'auc': 0.86307, 'ap': 0.29406}
+test: {'epoch': 81, 'time_epoch': 14.02633, 'loss': 0.05218983, 'lr': 0, 'params': 9745818, 'time_iter': 0.1631, 'accuracy': 0.97922, 'auc': 0.85862, 'ap': 0.28043}
+> Epoch 81: took 299.2s (avg 303.4s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5245, 0.4755], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7966, 0.2034], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7451, 0.2549], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6196, 0.3804], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5762, 0.4238], device='cuda:0', requires_grad=True)
+train: {'epoch': 82, 'time_epoch': 261.76906, 'eta': 4462.32584, 'eta_hours': 1.23953, 'loss': 0.02010021, 'lr': 4.3e-05, 'params': 9745818, 'time_iter': 0.38214, 'accuracy': 0.99174, 'auc': 0.98041, 'ap': 0.66907}
+val: {'epoch': 82, 'time_epoch': 13.31828, 'loss': 0.0493626, 'lr': 0, 'params': 9745818, 'time_iter': 0.15486, 'accuracy': 0.98078, 'auc': 0.86307, 'ap': 0.29377}
+test: {'epoch': 82, 'time_epoch': 14.04447, 'loss': 0.05233473, 'lr': 0, 'params': 9745818, 'time_iter': 0.16331, 'accuracy': 0.97917, 'auc': 0.85831, 'ap': 0.28104}
+> Epoch 82: took 301.3s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5235, 0.4765], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7962, 0.2038], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7435, 0.2565], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6190, 0.3810], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5751, 0.4249], device='cuda:0', requires_grad=True)
+train: {'epoch': 83, 'time_epoch': 263.23268, 'eta': 4199.97759, 'eta_hours': 1.16666, 'loss': 0.0200377, 'lr': 3.848e-05, 'params': 9745818, 'time_iter': 0.38428, 'accuracy': 0.99181, 'auc': 0.98066, 'ap': 0.66965}
+val: {'epoch': 83, 'time_epoch': 13.34207, 'loss': 0.04948158, 'lr': 0, 'params': 9745818, 'time_iter': 0.15514, 'accuracy': 0.98057, 'auc': 0.86221, 'ap': 0.2939}
+test: {'epoch': 83, 'time_epoch': 14.08833, 'loss': 0.052424, 'lr': 0, 'params': 9745818, 'time_iter': 0.16382, 'accuracy': 0.97901, 'auc': 0.85779, 'ap': 0.27981}
+> Epoch 83: took 302.9s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5234, 0.4766], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7961, 0.2039], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7441, 0.2559], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6185, 0.3815], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5749, 0.4251], device='cuda:0', requires_grad=True)
+train: {'epoch': 84, 'time_epoch': 261.74164, 'eta': 3937.34541, 'eta_hours': 1.09371, 'loss': 0.0199682, 'lr': 3.419e-05, 'params': 9745818, 'time_iter': 0.3821, 'accuracy': 0.99174, 'auc': 0.98101, 'ap': 0.67312}
+val: {'epoch': 84, 'time_epoch': 13.36822, 'loss': 0.04952851, 'lr': 0, 'params': 9745818, 'time_iter': 0.15544, 'accuracy': 0.98059, 'auc': 0.86186, 'ap': 0.29427}
+test: {'epoch': 84, 'time_epoch': 14.04319, 'loss': 0.05250344, 'lr': 0, 'params': 9745818, 'time_iter': 0.16329, 'accuracy': 0.97907, 'auc': 0.85765, 'ap': 0.28061}
+> Epoch 84: took 301.3s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5238, 0.4762], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7957, 0.2043], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7439, 0.2561], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6182, 0.3819], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5744, 0.4256], device='cuda:0', requires_grad=True)
+train: {'epoch': 85, 'time_epoch': 260.02259, 'eta': 3674.45409, 'eta_hours': 1.02068, 'loss': 0.0199523, 'lr': 3.013e-05, 'params': 9745818, 'time_iter': 0.3796, 'accuracy': 0.9917, 'auc': 0.98094, 'ap': 0.67282}
+val: {'epoch': 85, 'time_epoch': 13.31217, 'loss': 0.04971196, 'lr': 0, 'params': 9745818, 'time_iter': 0.15479, 'accuracy': 0.9805, 'auc': 0.86199, 'ap': 0.29426}
+test: {'epoch': 85, 'time_epoch': 14.05609, 'loss': 0.05266674, 'lr': 0, 'params': 9745818, 'time_iter': 0.16344, 'accuracy': 0.97902, 'auc': 0.85745, 'ap': 0.28003}
+> Epoch 85: took 303.4s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7948, 0.2052], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7437, 0.2563], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6181, 0.3820], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5742, 0.4258], device='cuda:0', requires_grad=True)
+train: {'epoch': 86, 'time_epoch': 262.95349, 'eta': 3412.06668, 'eta_hours': 0.9478, 'loss': 0.01985389, 'lr': 2.632e-05, 'params': 9745818, 'time_iter': 0.38387, 'accuracy': 0.99183, 'auc': 0.98124, 'ap': 0.67652}
+val: {'epoch': 86, 'time_epoch': 13.32068, 'loss': 0.04974033, 'lr': 0, 'params': 9745818, 'time_iter': 0.15489, 'accuracy': 0.98061, 'auc': 0.86254, 'ap': 0.29413}
+test: {'epoch': 86, 'time_epoch': 14.04058, 'loss': 0.05269965, 'lr': 0, 'params': 9745818, 'time_iter': 0.16326, 'accuracy': 0.97903, 'auc': 0.85822, 'ap': 0.27961}
+> Epoch 86: took 302.6s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5240, 0.4760], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7949, 0.2051], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7432, 0.2568], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6174, 0.3826], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5738, 0.4262], device='cuda:0', requires_grad=True)
+train: {'epoch': 87, 'time_epoch': 260.42241, 'eta': 3149.32125, 'eta_hours': 0.87481, 'loss': 0.01982074, 'lr': 2.275e-05, 'params': 9745818, 'time_iter': 0.38018, 'accuracy': 0.99186, 'auc': 0.98119, 'ap': 0.67727}
+val: {'epoch': 87, 'time_epoch': 13.31867, 'loss': 0.04974914, 'lr': 0, 'params': 9745818, 'time_iter': 0.15487, 'accuracy': 0.98063, 'auc': 0.86226, 'ap': 0.29492}
+test: {'epoch': 87, 'time_epoch': 14.0014, 'loss': 0.05273177, 'lr': 0, 'params': 9745818, 'time_iter': 0.16281, 'accuracy': 0.97903, 'auc': 0.85771, 'ap': 0.28016}
+> Epoch 87: took 299.9s (avg 303.3s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5243, 0.4758], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7953, 0.2047], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7430, 0.2570], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6169, 0.3831], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5729, 0.4270], device='cuda:0', requires_grad=True)
+train: {'epoch': 88, 'time_epoch': 261.75849, 'eta': 2886.79315, 'eta_hours': 0.80189, 'loss': 0.01977122, 'lr': 1.943e-05, 'params': 9745818, 'time_iter': 0.38213, 'accuracy': 0.99183, 'auc': 0.98141, 'ap': 0.67902}
+val: {'epoch': 88, 'time_epoch': 13.36309, 'loss': 0.04976179, 'lr': 0, 'params': 9745818, 'time_iter': 0.15538, 'accuracy': 0.98068, 'auc': 0.86138, 'ap': 0.29416}
+test: {'epoch': 88, 'time_epoch': 14.00321, 'loss': 0.05271503, 'lr': 0, 'params': 9745818, 'time_iter': 0.16283, 'accuracy': 0.97906, 'auc': 0.85724, 'ap': 0.28043}
+> Epoch 88: took 301.4s (avg 303.2s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5240, 0.4760], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7948, 0.2052], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7428, 0.2572], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6162, 0.3838], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5727, 0.4273], device='cuda:0', requires_grad=True)
+train: {'epoch': 89, 'time_epoch': 260.66809, 'eta': 2624.16101, 'eta_hours': 0.72893, 'loss': 0.01974057, 'lr': 1.636e-05, 'params': 9745818, 'time_iter': 0.38054, 'accuracy': 0.99187, 'auc': 0.98155, 'ap': 0.67733}
+val: {'epoch': 89, 'time_epoch': 15.18702, 'loss': 0.04982657, 'lr': 0, 'params': 9745818, 'time_iter': 0.17659, 'accuracy': 0.98058, 'auc': 0.86137, 'ap': 0.29432}
+test: {'epoch': 89, 'time_epoch': 13.99059, 'loss': 0.05277879, 'lr': 0, 'params': 9745818, 'time_iter': 0.16268, 'accuracy': 0.97896, 'auc': 0.85708, 'ap': 0.27976}
+> Epoch 89: took 302.0s (avg 303.2s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5244, 0.4757], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7953, 0.2047], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7424, 0.2576], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6158, 0.3842], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5719, 0.4281], device='cuda:0', requires_grad=True)
+train: {'epoch': 90, 'time_epoch': 259.67919, 'eta': 2361.47422, 'eta_hours': 0.65597, 'loss': 0.01970434, 'lr': 1.355e-05, 'params': 9745818, 'time_iter': 0.37909, 'accuracy': 0.99189, 'auc': 0.98166, 'ap': 0.68051}
+val: {'epoch': 90, 'time_epoch': 13.29723, 'loss': 0.04972558, 'lr': 0, 'params': 9745818, 'time_iter': 0.15462, 'accuracy': 0.98059, 'auc': 0.8613, 'ap': 0.29413}
+test: {'epoch': 90, 'time_epoch': 14.07868, 'loss': 0.05268185, 'lr': 0, 'params': 9745818, 'time_iter': 0.16371, 'accuracy': 0.97902, 'auc': 0.85698, 'ap': 0.2803}
+> Epoch 90: took 299.2s (avg 303.2s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5244, 0.4756], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7952, 0.2048], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7421, 0.2580], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6159, 0.3841], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5722, 0.4278], device='cuda:0', requires_grad=True)
+train: {'epoch': 91, 'time_epoch': 263.06887, 'eta': 2099.14758, 'eta_hours': 0.5831, 'loss': 0.01971671, 'lr': 1.099e-05, 'params': 9745818, 'time_iter': 0.38404, 'accuracy': 0.99187, 'auc': 0.98155, 'ap': 0.67611}
+val: {'epoch': 91, 'time_epoch': 13.31871, 'loss': 0.04984483, 'lr': 0, 'params': 9745818, 'time_iter': 0.15487, 'accuracy': 0.98071, 'auc': 0.86151, 'ap': 0.29413}
+test: {'epoch': 91, 'time_epoch': 14.02831, 'loss': 0.05281869, 'lr': 0, 'params': 9745818, 'time_iter': 0.16312, 'accuracy': 0.9789, 'auc': 0.85709, 'ap': 0.2805}
+> Epoch 91: took 302.6s (avg 303.2s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7950, 0.2050], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7415, 0.2585], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6155, 0.3845], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5720, 0.4280], device='cuda:0', requires_grad=True)
+train: {'epoch': 92, 'time_epoch': 259.54017, 'eta': 1836.53937, 'eta_hours': 0.51015, 'loss': 0.01966017, 'lr': 8.7e-06, 'params': 9745818, 'time_iter': 0.37889, 'accuracy': 0.99195, 'auc': 0.98173, 'ap': 0.68125}
+val: {'epoch': 92, 'time_epoch': 13.38009, 'loss': 0.04979189, 'lr': 0, 'params': 9745818, 'time_iter': 0.15558, 'accuracy': 0.98077, 'auc': 0.86152, 'ap': 0.2948}
+test: {'epoch': 92, 'time_epoch': 14.03788, 'loss': 0.05277551, 'lr': 0, 'params': 9745818, 'time_iter': 0.16323, 'accuracy': 0.9792, 'auc': 0.85714, 'ap': 0.28028}
+> Epoch 92: took 299.1s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5243, 0.4757], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7947, 0.2053], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7414, 0.2586], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6152, 0.3848], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5718, 0.4282], device='cuda:0', requires_grad=True)
+train: {'epoch': 93, 'time_epoch': 261.55086, 'eta': 1574.12478, 'eta_hours': 0.43726, 'loss': 0.01963113, 'lr': 6.67e-06, 'params': 9745818, 'time_iter': 0.38183, 'accuracy': 0.9919, 'auc': 0.98168, 'ap': 0.68161}
+val: {'epoch': 93, 'time_epoch': 13.37079, 'loss': 0.04974916, 'lr': 0, 'params': 9745818, 'time_iter': 0.15547, 'accuracy': 0.98073, 'auc': 0.86133, 'ap': 0.29404}
+test: {'epoch': 93, 'time_epoch': 14.02545, 'loss': 0.05272082, 'lr': 0, 'params': 9745818, 'time_iter': 0.16309, 'accuracy': 0.97914, 'auc': 0.85699, 'ap': 0.2805}
+> Epoch 93: took 301.3s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5243, 0.4758], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7946, 0.2054], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7412, 0.2588], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6152, 0.3848], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5716, 0.4284], device='cuda:0', requires_grad=True)
+train: {'epoch': 94, 'time_epoch': 259.71348, 'eta': 1311.63167, 'eta_hours': 0.36434, 'loss': 0.0196442, 'lr': 4.91e-06, 'params': 9745818, 'time_iter': 0.37914, 'accuracy': 0.99193, 'auc': 0.98168, 'ap': 0.68223}
+val: {'epoch': 94, 'time_epoch': 13.97556, 'loss': 0.04977773, 'lr': 0, 'params': 9745818, 'time_iter': 0.16251, 'accuracy': 0.9807, 'auc': 0.86143, 'ap': 0.29419}
+test: {'epoch': 94, 'time_epoch': 14.63293, 'loss': 0.05275379, 'lr': 0, 'params': 9745818, 'time_iter': 0.17015, 'accuracy': 0.97912, 'auc': 0.85687, 'ap': 0.28054}
+> Epoch 94: took 305.6s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5242, 0.4758], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7946, 0.2054], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7411, 0.2590], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6151, 0.3849], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5717, 0.4283], device='cuda:0', requires_grad=True)
+train: {'epoch': 95, 'time_epoch': 262.56786, 'eta': 1049.3154, 'eta_hours': 0.29148, 'loss': 0.01962725, 'lr': 3.41e-06, 'params': 9745818, 'time_iter': 0.38331, 'accuracy': 0.99196, 'auc': 0.98181, 'ap': 0.68278}
+val: {'epoch': 95, 'time_epoch': 13.31168, 'loss': 0.04990628, 'lr': 0, 'params': 9745818, 'time_iter': 0.15479, 'accuracy': 0.98066, 'auc': 0.86145, 'ap': 0.29465}
+test: {'epoch': 95, 'time_epoch': 14.09844, 'loss': 0.05286488, 'lr': 0, 'params': 9745818, 'time_iter': 0.16394, 'accuracy': 0.97911, 'auc': 0.85697, 'ap': 0.28027}
+> Epoch 95: took 302.2s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5242, 0.4758], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7945, 0.2055], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7409, 0.2591], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6151, 0.3849], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5716, 0.4284], device='cuda:0', requires_grad=True)
+train: {'epoch': 96, 'time_epoch': 260.39553, 'eta': 786.92675, 'eta_hours': 0.21859, 'loss': 0.01959597, 'lr': 2.18e-06, 'params': 9745818, 'time_iter': 0.38014, 'accuracy': 0.99196, 'auc': 0.98175, 'ap': 0.68479}
+val: {'epoch': 96, 'time_epoch': 13.3477, 'loss': 0.04984435, 'lr': 0, 'params': 9745818, 'time_iter': 0.15521, 'accuracy': 0.98065, 'auc': 0.86152, 'ap': 0.29448}
+test: {'epoch': 96, 'time_epoch': 14.00121, 'loss': 0.05281855, 'lr': 0, 'params': 9745818, 'time_iter': 0.1628, 'accuracy': 0.97908, 'auc': 0.85707, 'ap': 0.28058}
+> Epoch 96: took 299.9s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7945, 0.2055], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7408, 0.2592], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6150, 0.3850], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5716, 0.4284], device='cuda:0', requires_grad=True)
+train: {'epoch': 97, 'time_epoch': 262.12803, 'eta': 524.61414, 'eta_hours': 0.14573, 'loss': 0.01957276, 'lr': 1.23e-06, 'params': 9745818, 'time_iter': 0.38267, 'accuracy': 0.99193, 'auc': 0.98202, 'ap': 0.68146}
+val: {'epoch': 97, 'time_epoch': 13.33191, 'loss': 0.04988361, 'lr': 0, 'params': 9745818, 'time_iter': 0.15502, 'accuracy': 0.98072, 'auc': 0.86163, 'ap': 0.29472}
+test: {'epoch': 97, 'time_epoch': 14.00489, 'loss': 0.05285414, 'lr': 0, 'params': 9745818, 'time_iter': 0.16285, 'accuracy': 0.97908, 'auc': 0.85699, 'ap': 0.28037}
+> Epoch 97: took 301.8s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7945, 0.2055], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7408, 0.2592], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6150, 0.3850], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5716, 0.4284], device='cuda:0', requires_grad=True)
+train: {'epoch': 98, 'time_epoch': 260.06098, 'eta': 262.28438, 'eta_hours': 0.07286, 'loss': 0.01958655, 'lr': 5.5e-07, 'params': 9745818, 'time_iter': 0.37965, 'accuracy': 0.99187, 'auc': 0.98202, 'ap': 0.68342}
+val: {'epoch': 98, 'time_epoch': 15.11772, 'loss': 0.04985283, 'lr': 0, 'params': 9745818, 'time_iter': 0.17579, 'accuracy': 0.98073, 'auc': 0.86166, 'ap': 0.29463}
+test: {'epoch': 98, 'time_epoch': 14.02853, 'loss': 0.05283543, 'lr': 0, 'params': 9745818, 'time_iter': 0.16312, 'accuracy': 0.97917, 'auc': 0.85704, 'ap': 0.28073}
+> Epoch 98: took 301.4s (avg 303.1s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Parameter containing:
+tensor([1.5241, 0.4759], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7945, 0.2055], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.7408, 0.2592], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.6150, 0.3851], device='cuda:0', requires_grad=True)
+Parameter containing:
+tensor([1.5716, 0.4284], device='cuda:0', requires_grad=True)
+train: {'epoch': 99, 'time_epoch': 260.48236, 'eta': 0.0, 'eta_hours': 0.0, 'loss': 0.0195862, 'lr': 1.4e-07, 'params': 9745818, 'time_iter': 0.38027, 'accuracy': 0.99195, 'auc': 0.9818, 'ap': 0.68457}
+val: {'epoch': 99, 'time_epoch': 13.31174, 'loss': 0.04989715, 'lr': 0, 'params': 9745818, 'time_iter': 0.15479, 'accuracy': 0.98063, 'auc': 0.86149, 'ap': 0.29444}
+test: {'epoch': 99, 'time_epoch': 14.00769, 'loss': 0.0528687, 'lr': 0, 'params': 9745818, 'time_iter': 0.16288, 'accuracy': 0.97906, 'auc': 0.85687, 'ap': 0.28034}
+> Epoch 99: took 300.0s (avg 303.0s) | Best so far: epoch 55	train_loss: 0.0236 train_ap: 0.5752	val_loss: 0.0463 val_ap: 0.2986	test_loss: 0.0489 test_ap: 0.2859
+Avg time per epoch: 303.04s
+Total train loop time: 8.42h
+Task done, results saved in results/ogbg-molpcba-GPS/0
+55
+{'epoch': 55, 'time_epoch': 259.18455, 'eta': 11575.76027, 'eta_hours': 3.21549, 'loss': 0.02359347, 'lr': 0.00022936, 'params': 9745818, 'time_iter': 0.37837, 'accuracy': 0.99024, 'auc': 0.96805, 'ap': 0.57523}
+{'epoch': 55, 'time_epoch': 15.15598, 'loss': 0.0463155, 'lr': 0, 'params': 9745818, 'time_iter': 0.17623, 'accuracy': 0.98102, 'auc': 0.87191, 'ap': 0.29862}
+{'epoch': 55, 'time_epoch': 14.0438, 'loss': 0.0489239, 'lr': 0, 'params': 9745818, 'time_iter': 0.1633, 'accuracy': 0.97963, 'auc': 0.86897, 'ap': 0.28586}
+Results aggregated across runs saved in results/ogbg-molpcba-GPS/agg
+[*] All done: 2024-11-11 07:50:04.531090
