@@ -14,7 +14,7 @@ function run_repeats {
     fi
 
     main="python main.py --cfg ${cfg_file}"
-    out_dir="results_full_exp/${dataset}"  # <-- Set the output dir.
+    out_dir="results_10_exp/${dataset}"  # <-- Set the output dir.
     common_params="out_dir ${out_dir} ${cfg_overrides}"
 
     echo "Run program: ${main}"
