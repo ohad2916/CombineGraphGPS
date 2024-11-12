@@ -36,6 +36,7 @@ function run_repeats {
         script="
         #!/bin/bash
         #SBATCH ${slurm_directive}
+        #SBATCH --job-name=${cfg_suffix}-${dataset}
 
         # Activate Conda environment
         /home/yandex/MLWG2024/michaelbest/anaconda3/etc/profile.d/conda.sh activate graphgps
