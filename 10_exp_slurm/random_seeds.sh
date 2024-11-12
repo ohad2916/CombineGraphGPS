@@ -1,17 +1,15 @@
 function run_repeats {
     dataset=$1
     cfg_suffix=$2
-    cfg_overrides=$3
 
-    main="python main.py --cfg ${cfg_file}"
-    out_dir="results_full_exp/${dataset}"  # Set the output dir
-    common_params="out_dir ${out_dir} ${cfg_overrides}"
-
+    main="python main.py --cfg /config/GPS/${dataset}-${cfg_suffix}.yaml wandb.use False"
+    out_dir="/home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/${dataset}"  # Set the output dir
+  
     echo "Run program: ${main}"
     echo "Output dir: ${out_dir}"
 
     # Create the directory for the .slurm files if it doesn't exist
-s
+
     # Loop through each seed (0 to 9)
     for SEED in {0..9}; do
         # Generate unique output and error file names for each seed
@@ -30,14 +28,16 @@ s
         echo "#SBATCH --mem=50000" >> ${slurm_file}
         echo "#SBATCH --output=${out_file}" >> ${slurm_file}
         echo "#SBATCH --error=${err_file}" >> ${slurm_file}
-        echo "#SBATCH ${slurm_directive}" >> ${slurm_file}
+	    echo "#SBATCH --time=4300" >> ${slurm_file}
+        echo "#SBATCH --gres=gpu:3" >> ${slurm_file}
+	    echo "#SBATCH --cpus-per-task=4" >> ${slurm_file}
         echo "" >> ${slurm_file}
         echo "echo 'Starting job...'" >> ${slurm_file}
         echo "/home/yandex/MLWG2024/michaelbest/anaconda3/etc/profile.d/conda.sh activate graphgps" >> ${slurm_file}
         echo "echo 'Activated environment: \$CONDA_PREFIX'" >> ${slurm_file}
         echo "" >> ${slurm_file}
         echo "cd /home/yandex/MLWG2024/michaelbest/CombineGraphGPS" >> ${slurm_file}
-        echo "python main.py --cfg ${cfg_file} --repeat 1 seed ${SEED} ${common_params}" >> ${slurm_file}
+        echo "${main} --repeat 1 seed ${SEED} out_dir ${out_dir}" >> ${slurm_file}
 
         # Echo and submit the job
         echo "Created Slurm file: ${slurm_file}"
@@ -47,11 +47,25 @@ s
 # Datasets and slurm directives
 DATASETS=("zinc" "ogbg-molhiv" "ogbg-molpcba")
 
-# The slurm directives
-slurm_directive="--time=4300 --gres=gpu:2 --cpus-per-task=4 "
-run_repeats zinc GPS+RWSE "name_tag GPSwRWSE.10run"
-run_repeats ogbg-molhiv GPS+RWSE "name_tag GPSwRWSE.10run"
-run_repeats ogbg-molpcba GPS+RWSE "name_tag GPSwRWSE.10run"
+# Loop through each dataset and create the Slurm files and submit the jobs
+
+for DATASET in ${DATASETS[@]}; do
+    if [ ${DATASET} == "zinc" ]; then
+        cfg_dir="configs/GPS"
+        cfg_suffix="GPS+RWSE"
+        cfg_overrides="name_tag GPSwRWSE.10run"
+    elif [ ${DATASET} == "ogbg-molhiv" ]; then
+        cfg_dir="configs/GPS"
+        cfg_suffix="GPS+RWSE"
+        cfg_overrides="name_tag GPSwRWSE.GatedGCN+Trf.10run"
+    elif [ ${DATASET} == "ogbg-molpcba" ]; then
+        cfg_dir="configs/GPS"
+        cfg_suffix="GPS+RWSE"
+        cfg_overrides="name_tag GPSwRWSE.GatedGCN+Trf.10run"
+    fi
+
+    run_repeats ${DATASET} ${cfg_suffix} 
+done
 
 
 
