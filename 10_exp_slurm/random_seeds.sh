@@ -2,7 +2,7 @@ function run_repeats {
     dataset=$1
     cfg_suffix=$2
 
-    main="python main.py --cfg /config/GPS/${dataset}-${cfg_suffix}.yaml wandb.use False"
+    main="python main.py --cfg /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/configs/GPS/${dataset}-${cfg_suffix}.yaml wandb.use False"
     out_dir="/home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/${dataset}"  # Set the output dir
   
     echo "Run program: ${main}"
@@ -20,9 +20,9 @@ function run_repeats {
         slurm_file="${dataset}/job_seed${SEED}.slurm"
 
         # Create the Slurm job script for this seed
-        echo "#!/bin/bash" > ${slurm_file}
+        echo "#!/bin/sh" > ${slurm_file}
         echo "#SBATCH --job-name=${cfg_suffix}-${dataset}-seed${SEED}" >> ${slurm_file}
-        echo "#SBATCH --partition=studentbatch"
+        echo "#SBATCH --partition=studentbatch" >> ${slurm_file}
         echo "#SBATCH --nodes=1" >> ${slurm_file}
         echo "#SBATCH --ntasks=1" >> ${slurm_file}
         echo "#SBATCH --mem=50000" >> ${slurm_file}
@@ -34,10 +34,10 @@ function run_repeats {
         echo "" >> ${slurm_file}
         echo "echo 'Starting job...'" >> ${slurm_file}
         echo "/home/yandex/MLWG2024/michaelbest/anaconda3/etc/profile.d/conda.sh activate graphgps" >> ${slurm_file}
-        echo "echo 'Activated environment: \$CONDA_PREFIX'" >> ${slurm_file}
+        echo "Activated environment: \$CONDA_PREFIX" >> ${slurm_file}
         echo "" >> ${slurm_file}
         echo "cd /home/yandex/MLWG2024/michaelbest/CombineGraphGPS" >> ${slurm_file}
-        echo "${main} --repeat 1 seed ${SEED} out_dir ${out_dir}" >> ${slurm_file}
+        echo "${main} seed ${SEED} out_dir ${out_dir}" >> ${slurm_file}
 
         # Echo and submit the job
         echo "Created Slurm file: ${slurm_file}"

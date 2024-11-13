@@ -1,15 +1,19 @@
-#!/bin/bash
+#!/bin/sh
 #SBATCH --job-name=GPS+RWSE-ogbg-molpcba-seed0
+#SBATCH --partition=studentbatch
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=50000
-#SBATCH --output=results_full_exp/ogbg-molpcba/output_seed0.out
-#SBATCH --error=results_full_exp/ogbg-molpcba/error_seed0.err
-#SBATCH --time=4300 --gres=gpu:2 --cpus-per-task=4 
+#SBATCH --output=/home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/ogbg-molpcba/output_seed0.out
+#SBATCH --error=/home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/ogbg-molpcba/error_seed0.err
+#SBATCH --time=2000
+#SBATCH --gpus=3
+#SBATCH --cpus-per-task=4
 
 echo 'Starting job...'
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 /home/yandex/MLWG2024/michaelbest/anaconda3/etc/profile.d/conda.sh activate graphgps
-echo 'Activated environment: $CONDA_PREFIX'
+echo "Activated environment: $CONDA_PREFIX"
 
 cd /home/yandex/MLWG2024/michaelbest/CombineGraphGPS
-python main.py --cfg  --repeat 1 seed 0 out_dir results_full_exp/ogbg-molpcba name_tag GPSwRWSE.10run
+python main.py --cfg /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/configs/GPS/ogbg-molpcba-GPS+RWSE.yaml wandb.use False seed 0 out_dir /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/ogbg-molpcba

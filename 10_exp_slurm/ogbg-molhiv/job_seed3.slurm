@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #SBATCH --job-name=GPS+RWSE-ogbg-molhiv-seed3
+#SBATCH --partition=studentbatch
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=50000
@@ -11,7 +12,7 @@
 
 echo 'Starting job...'
 /home/yandex/MLWG2024/michaelbest/anaconda3/etc/profile.d/conda.sh activate graphgps
-echo 'Activated environment: $CONDA_PREFIX'
+Activated environment: $CONDA_PREFIX
 
 cd /home/yandex/MLWG2024/michaelbest/CombineGraphGPS
-python main.py --cfg /config/GPS/ogbg-molhiv-GPS+RWSE.yaml wandb.use False --repeat 1 seed 3 out_dir /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/ogbg-molhiv
+python main.py --cfg /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/configs/GPS/ogbg-molhiv-GPS+RWSE.yaml wandb.use False seed 3 out_dir /home/yandex/MLWG2024/michaelbest/CombineGraphGPS/results_10_exp/ogbg-molhiv
